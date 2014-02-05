@@ -69,21 +69,25 @@
               	<ul class="weight-configuration" data-bind="foreach: plateConfigurations">
               		<li>
               			<div class="weight"> 
-              				Working Weight: <span data-bind="text: weight"></span><span data-bind="text: unit"  class="unit"></span>
+              				Working Weight: <span data-bind="text: weight"></span><span data-bind="text: unit"  class="units"></span>
               			</div>
               			<ul data-bind="foreach: sets" class="sets">
 							<li>
 								<div class="weight-reps">
-									<span data-bind="text: weight"></span><span data-bind="text: $parent.unit"></span> @ <span data-bind="text: reps, visible: reps> 0">reps</span>
+									<span data-bind="text: weight"></span><span class="units" data-bind="text: $parent.unit"></span> 
+									<span data-bind="visible: reps> -10">@</span> 
+									<span data-bind="text: reps, visible: reps > 0"></span><span data-bind="visible: reps > 0" class="reps">&nbsp;reps</span>
+									</span><span data-bind="visible: reps <= 0" class="reps work-reps">work reps</span>
 								</div>
 		              			<div class="plate-breakdown" data-bind="foreach: plateConfiguration">
 
 		              				<span data-bind="text: count"></span>x<span data-bind="text: size"></span><br />
 		              			</div>
+		              			<div class="plate-breakdown" data-bind="visible: weight <= $root.barbellWeight">bar</div>
 		              		</li>
 						</ul>              			
                			<div class="additional-weight" data-bind="visible: additional > 0">
-               				<span data-bind="text:additional"></span><span data-bind="text: unit"  ></span>
+               				<span data-bind="text:additional"></span><span class="units" data-bind="text: unit"  ></span>
                				&nbsp;left
                			</div>
               			
