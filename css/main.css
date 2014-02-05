@@ -55,6 +55,10 @@ textarea {
     padding: 0.2em 0;
 }
 
+ul{
+	list-style: none;
+}
+
 
 /* ===== Initializr Styles ==================================================
    Author: Jonathan Verrecchia - verekia.com/initializr/responsive-template
@@ -165,12 +169,13 @@ nav a:hover {
 	padding: 0; 
 	margin: 0;
 	list-style: none;
-} .weight-configuration li{
+} .weight-configuration >  li{
 	padding: 7px;
 	background: #f9f9f9;
 	border: 1px solid #ddd;
 	border-bottom-width: 3px;
 	margin-bottom: 10px;
+	overflow: hidden;
 } .weight-configuration div.weight{
 	font-weight: bold;
 	font-size: 18px;
@@ -180,7 +185,15 @@ nav a:hover {
 }
 
 
-
+ul.set{
+	overflow: hidden;
+} ul.sets > li {
+	float: left;
+	padding: 5px;
+	border-right: 1px solid #ccc;
+} ul.sets > li:last-child {
+	border-right: none;
+}
 
 
 

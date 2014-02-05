@@ -8,6 +8,13 @@ var plateWeights = {
 	"KG": [  1, 2.5,  5, 10, 15, 20]
 };
 
+var warmupScheme = [
+	{ reps: 5, percent: 40},
+	{ reps: 5, percent: 50},
+	{ reps: 3, percent: 67},
+	{ reps: 2, percent: 80},
+];
+
 var BarbellView = function()
 {
 	var self = this;
@@ -65,10 +72,60 @@ var BarbellView = function()
 	self.totalPlateConfigurations = self.storageHandler.getWithDefault('plateConfigurations', [], true);
 	self.plateConfigurations      = ko.observableArray(self.totalPlateConfigurations.slice(0, self.displayConfigurationsNumber));
 	
-	console.log(self.plateConfigurations());
+	//console.log(self.plateConfigurations());
 	
-	self.calculateWeight = function() {
-		left = self.weightToCalculate() - self.barbellWeight();
+	self.calculateSets= function() {
+		//first calculate 100%
+		sets = [];
+		thisWarmupScheme = warmupScheme.slice(0);
+		thisWarmupScheme.push({ percent:100, reps: 0 });
+		
+		for (i = 0; i < thisWarmupScheme.length; i++) { 
+			weight = parseInt(self.weightToCalculate() * thisWarmupScheme[i].percent / 100);
+			
+			console.log(thisWarmupScheme[i].percent + ' ' + weight);
+			
+			plateConfiguration = self.calculateWeight(weight);
+			
+			console.log(plateConfiguration.left);
+			
+			//weight -= plateConfiguration.left;
+			
+			sets.push({
+				weight: weight,
+				reps: thisWarmupScheme[i].reps,
+				percent: thisWarmupScheme[i].percent, 
+				plateConfiguration: plateConfiguration
+			});
+		}
+		
+		
+		
+		//keep all plate configs (up to max amount constant)
+		self.totalPlateConfigurations.unshift({
+			unit:       self.weightUnit(),
+			weight:     self.weightToCalculate(),
+			additional: left,
+			sets: sets
+		});
+		self.totalPlateConfigurations.slice(0, 20);
+		//but only display so many
+		self.plateConfigurations(self.totalPlateConfigurations.slice(0, self.displayConfigurationsNumber));
+		
+		
+		self.storageHandler.set('plateConfigurations', self.totalPlateConfigurations, true);
+		
+		if (left > 0) {
+			console.log('sorry bro, add some chainz for that extra ' + left + self.weightUnit());
+		}
+		
+		
+		
+	};
+	
+	self.calculateWeight = function(weightToCalculate) {
+		//console.log(weightToCalculate);
+		left = weightToCalculate - self.barbellWeight();
 		
 		platesToUse = self.plateWeightsAvailable().slice(0);
 		platesToUse.sort(function(a, b) { return a - b; });
@@ -104,25 +161,9 @@ var BarbellView = function()
 			
 		}
 		
-		//keep all plate configs (up to max amount constant
-		self.totalPlateConfigurations.unshift({
-			unit:       self.weightUnit(),
-			weight:     self.weightToCalculate(),
-			additional: left,
-			plateConfiguration: plateConfiguration
-		});
-		self.totalPlateConfigurations.slice(0, 20);
-		//but only display so many
-		self.plateConfigurations(self.totalPlateConfigurations.slice(0, self.displayConfigurationsNumber));
-		
-		
-		self.storageHandler.set('plateConfigurations', self.totalPlateConfigurations, true);
-		
-		if (left > 0) {
-			console.log('sorry bro, add some chainz for that extra ' + left + self.weightUnit());
-		}
+		return plateConfiguration;
 	
-	}
+	};
 	
 	self.formatConfigurations = function(saveFirst){}
 	

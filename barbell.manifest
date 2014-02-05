@@ -1,0 +1,19 @@
+CACHE MANIFEST
+#rev2
+
+CACHE:
+
+css/normalize.min.css
+css/main.css
+
+js/vendor/modernizr-2.6.2-respond-1.1.0.min.js
+js/vendor/knockout-3.0.0.js
+
+js/main.js
+
+
+NETWORK:
+http://www.google-analytics.com/ga.js
+
+FALLBACK:
+/ offline.html

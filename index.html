@@ -2,7 +2,7 @@
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
 <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+<html class="no-js" manifest="barbell.manifest">
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
@@ -61,20 +61,27 @@
 				
 				<div class="weight-to-calculate">
 					<input type="text" data-bind="value: weightToCalculate" />
-					<button data-bind="click: calculateWeight">Go</button>
+					<button data-bind="click: calculateSets">Go</button>
 				</div>
 				
-             	<span data-bind="text: weightToCalculate"></span>
+             	
               	        
               	<ul class="weight-configuration" data-bind="foreach: plateConfigurations">
               		<li>
               			<div class="weight"> 
-              				<span data-bind="text: weight"></span><span data-bind="text: unit"  class="unit"></span>
+              				Working Weight: <span data-bind="text: weight"></span><span data-bind="text: unit"  class="unit"></span>
               			</div>
-              			<div class="plate-breakdown" data-bind="foreach: plateConfiguration">
-              				<span data-bind="text: size"></span> - <span data-bind="text: count"></span><br />
-              			</div>
-              			
+              			<ul data-bind="foreach: sets" class="sets">
+							<li>
+								<div class="weight-reps">
+									<span data-bind="text: weight"></span><span data-bind="text: $parent.unit"></span> @ <span data-bind="text: reps, visible: reps> 0">reps</span>
+								</div>
+		              			<div class="plate-breakdown" data-bind="foreach: plateConfiguration">
+
+		              				<span data-bind="text: count"></span>x<span data-bind="text: size"></span><br />
+		              			</div>
+		              		</li>
+						</ul>              			
                			<div class="additional-weight" data-bind="visible: additional > 0">
                				<span data-bind="text:additional"></span><span data-bind="text: unit"  ></span>
                				&nbsp;left
@@ -94,7 +101,7 @@
             </footer>
         </div>
 
-        <script src="js/knockout-3.0.0.js"></script>
+        <script src="js/vendor/knockout-3.0.0.js"></script>
         
         <script src="js/main.js"></script>
 
