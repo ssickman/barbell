@@ -74,11 +74,14 @@ var BarbellView = function()
 	
 	//console.log(self.plateConfigurations());
 	
-	self.calculateSets= function() {
+	self.calculateSets = function() {
 		//first calculate 100%
 		sets = [];
+		
+		//getSets()
 		thisWarmupScheme = warmupScheme.slice(0);
 		thisWarmupScheme.push({ percent:100, reps: 0 });
+		//getSets()
 		
 		for (i = 0; i < thisWarmupScheme.length; i++) { 
 			weight = parseInt(self.weightToCalculate() * thisWarmupScheme[i].percent / 100);
@@ -87,12 +90,12 @@ var BarbellView = function()
 			
 			plateConfiguration = self.calculateWeight(weight);
 			
-			console.log(plateConfiguration.left);
+			console.log(plateConfiguration[plateConfiguration.length -1].left);
 			
-			//weight -= plateConfiguration.left;
+
 			
 			sets.push({
-				weight: weight,
+				weight: weight - plateConfiguration[plateConfiguration.length -1].left,
 				reps: thisWarmupScheme[i].reps,
 				percent: thisWarmupScheme[i].percent, 
 				plateConfiguration: plateConfiguration
@@ -153,6 +156,7 @@ var BarbellView = function()
 				plateConfiguration.push({
 					size: plateSize,
 					count: plateCount,		
+					left: left,
 				});
 				
 				plateCount = 0;
