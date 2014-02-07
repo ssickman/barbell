@@ -10,9 +10,9 @@ var plateWeights = {
 
 var warmupScheme = [
 	{ reps: 5, percent: 40},
-	{ reps: 5, percent: 50},
 	{ reps: 3, percent: 67},
 	{ reps: 2, percent: 80},
+	{ reps: 1, percent: 90},
 ];
 
 var BarbellView = function()
