@@ -66,13 +66,13 @@ var BarbellView = function()
 	self.displayConfigurationsNumber = 3;
 	self.showMoreConfigurations = function() { console.log()
 		self.displayConfigurationsNumber = 10;
-		self.plateConfigurations(self.totalPlateConfigurations.slice(0, self.displayConfigurationsNumber));
+		self.weightConfigs(self.allWeightConfigs.slice(0, self.displayConfigurationsNumber));
 	}
 	
-	self.totalPlateConfigurations = self.storageHandler.getWithDefault('plateConfigurations', [], true);
-	self.plateConfigurations      = ko.observableArray(self.totalPlateConfigurations.slice(0, self.displayConfigurationsNumber));
+	self.allWeightConfigs = self.storageHandler.getWithDefault('weightConfigs', [], true);
+	self.weightConfigs      = ko.observableArray(self.allWeightConfigs.slice(0, self.displayConfigurationsNumber));
 	
-	//console.log(self.plateConfigurations());
+	//console.log(self.weightConfigs());
 	
 	self.calculateSets = function() {
 		//first calculate 100%
@@ -88,35 +88,28 @@ var BarbellView = function()
 			
 			console.log(thisWarmupScheme[i].percent + ' ' + weight);
 			
-			plateConfiguration = self.calculateWeight(weight);
-			
-			console.log(plateConfiguration[plateConfiguration.length -1].left);
-			
-
-			
-			sets.push({
-				weight: weight - plateConfiguration[plateConfiguration.length -1].left,
-				reps: thisWarmupScheme[i].reps,
-				percent: thisWarmupScheme[i].percent, 
-				plateConfiguration: plateConfiguration
-			});
+			set         = self.calculateWeight(weight);
+			set.percent = thisWarmupScheme[i].percent
+			set.reps    = thisWarmupScheme[i].reps,
+			sets.push(set);
+			console.log(set);
 		}
 		
 		
 		
 		//keep all plate configs (up to max amount constant)
-		self.totalPlateConfigurations.unshift({
+		self.allWeightConfigs.unshift({
 			unit:       self.weightUnit(),
 			weight:     self.weightToCalculate(),
-			additional: left,
+			additional: sets[sets.length-1].additional,
 			sets: sets
 		});
-		self.totalPlateConfigurations.slice(0, 20);
+		self.allWeightConfigs.slice(0, 20);
 		//but only display so many
-		self.plateConfigurations(self.totalPlateConfigurations.slice(0, self.displayConfigurationsNumber));
+		self.weightConfigs(self.allWeightConfigs.slice(0, self.displayConfigurationsNumber));
 		
 		
-		self.storageHandler.set('plateConfigurations', self.totalPlateConfigurations, true);
+		self.storageHandler.set('weightConfigs', self.allWeightConfigs, true);
 		
 		if (left > 0) {
 			console.log('sorry bro, add some chainz for that extra ' + left + self.weightUnit());
@@ -156,7 +149,6 @@ var BarbellView = function()
 				plateConfiguration.push({
 					size: plateSize,
 					count: plateCount,		
-					left: left,
 				});
 				
 				plateCount = 0;
@@ -165,7 +157,11 @@ var BarbellView = function()
 			
 		}
 		
-		return plateConfiguration;
+		return {
+			displayWeight: weightToCalculate - left,
+			additional: left,
+			plateConfiguration: plateConfiguration
+		};
 	
 	};
 	
