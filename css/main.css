@@ -173,7 +173,7 @@ nav a:hover {
    Author's custom styles
    ========================================================================== */
 body{
-	color: #555;
+	color: #666;
 }
 
 .config{
@@ -222,6 +222,10 @@ ul.set{
 	height: 6em;
 } ul.sets > li:last-child {
 	border-right: none;
+}
+
+.additional-weight{
+	clear: both;
 }
 
 
