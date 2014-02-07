@@ -74,6 +74,8 @@ body {
 .wrapper {
     width: 90%;
     margin: 0 5%;
+	margin:0 auto;
+	transition: width .5s ease;
 }
 
 /* ===================
@@ -211,15 +213,21 @@ div.weight-to-calculate{
 } 
 
 
-ul.set{
+ul.sets{
 	overflow: hidden;
+	display:-webkit-flex;
+	display: flex;
+	/* align-items: stretch; */
+
 } ul.sets > li {
 	float: left;
 	padding: 5px;
 	border-right: 1px solid #ccc;
 	width: 130px;
-	width: 17%;
-	height: 6em;
+	width: 200px;
+	/* height: 6em; */
+	
+	
 } ul.sets > li:last-child {
 	border-right: none;
 }
@@ -363,7 +371,13 @@ ul.set{
     .oldie nav a {
         margin: 0 0.7%;
     }
+
+	.wrapper {
+    	max-width: 860px;
+		width: 460px;
+	}
 }
+
 
 @media only screen and (min-width: 768px) {
 
@@ -404,6 +418,11 @@ ul.set{
         float: right;
         width: 28%;
     }
+    
+    .wrapper {
+		width: 660px;
+		
+	}
 }
 
 @media only screen and (min-width: 1140px) {
@@ -413,8 +432,7 @@ ul.set{
    =============== */
 
     .wrapper {
-        width: 860px; /* 1140px - 10% for margins */
-        margin: 0 auto;
+        width: 860px;
     }
 }
 
