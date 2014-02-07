@@ -79,9 +79,9 @@
               	        
               	<ul class="weight-configuration" data-bind="foreach: weightConfigs">
               		<li class="box">
-              			<div class="weight"> 
+              			<h3 class="weight"> 
               				Working Weight: <span data-bind="text: weight"></span><span data-bind="text: unit"  class="units"></span>
-              			</div>
+              			</h3>
               			<ul data-bind="foreach: sets" class="sets">
 							<li>
 								<div class="weight-reps">
@@ -90,9 +90,9 @@
 									<span data-bind="text: reps, visible: reps > 0"></span><span data-bind="visible: reps > 0" class="reps">&nbsp;reps</span>
 									</span><span data-bind="visible: reps <= 0" class="reps work-reps">work reps</span>
 								</div>
-		              			<div class="plate-breakdown" data-bind="foreach: plateConfiguration">
+		              			<div class="plate-breakdown" data-bind="foreach: $root.padAndReverse(plateConfiguration.slice(0))">
 
-		              				<span data-bind="text: count"></span>x<span data-bind="text: size"></span><br />
+		              				<div data-bind="css: $root.plateClass(size, $parents[1].unit, count)" class="plate"><span data-bind="text: count"></span>x<span data-bind="text: size"></span></div>
 		              			</div>
 		              			<div class="plate-breakdown" data-bind="visible: displayWeight <= $root.barbellWeight">bar</div>
 		              		</li>

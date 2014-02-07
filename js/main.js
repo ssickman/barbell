@@ -74,6 +74,23 @@ var BarbellView = function()
 	
 	//console.log(self.weightConfigs());
 	
+	//for fractional plates
+	self.plateClass = function(plateSize, unit, count) {
+		return 'plate-' + String(plateSize).replace('.', '--') + unit + ' plate-count-' + count;
+	};
+	
+	self.padAndReverse = function(plateArray) {
+		//only pad to 4, because we'll never have 5+ plates,
+		for (i = plateArray.length; i < 3; i++) {
+			plateArray.push({
+				size:  0,
+				count: 0
+			});
+		}
+		
+		return plateArray.reverse();
+	};
+	
 	self.calculateSets = function() {
 		//first calculate 100%
 		sets = [];

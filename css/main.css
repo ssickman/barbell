@@ -205,11 +205,15 @@ div.weight-to-calculate{
 	margin: 0;
 	list-style: none;
 } .weight-configuration >  li{
-	padding: 0 10px;
-} .weight-configuration div.weight{
-	font-weight: bold;
-	font-size: 18px;
-	margin: 10px 0 0 0px;
+	/* padding: 0 10px; */
+} .weight-configuration h3.weight{
+	font-weight: normal;
+	font-size: 16px;
+	margin: 0;
+	padding: 5px 8px;
+	background: #777;
+	color: #F9F9F9;
+	border-bottom: 2px solid #555555;
 } 
 
 
@@ -221,7 +225,7 @@ ul.sets{
 
 } ul.sets > li {
 	float: left;
-	padding: 5px;
+	/* padding: 5px; */
 	border-right: 1px solid #ccc;
 	width: 130px;
 	width: 200px;
@@ -236,12 +240,68 @@ ul.sets{
 	clear: both;
 }
 
+.weight-reps{
+	background: none repeat scroll 0 0 #bbb;
+    color: #F9F9F9;
+    padding: 4px 5px 0;
+    border-bottom: 2px solid #999;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.plate-breakdown > div {
+	
+	
+} .plate-breakdown > div:nth-child(odd){
+/* 	background: #ccc; */
+} .plate-breakdown > div:nth-child(even){
+/* 	background: #ddd; */
+}
+
+
+.plate{
+	background: none repeat scroll 0 0 #EEEEEE;
+    border: 1px solid #DDDDDD;
+    margin: 0px auto 3px;
+    padding: 0 5px;
+    text-align: center;
+    color: #777;
+    font-size: 15px;
+    text-shadow: 1px 1px 0 #f9f9f9;
+} .plate-count-0 {
+	opacity: 0;
+}
+
+.plate-2--5LB, .plate-1KG{
+	min-width: 36px;
+	width: 30%;
+}
+
+.plate-5LB, .plate-2--5KG{
+	width:40%;
+}
+
+.plate-10LB, .plate-5KG{
+	width: 50%;
+}
+
+.plate-25LB, .plate-10KG{
+	width: 60%;
+}
+
+.plate-35LB, .plate-15KG{
+	width: 70%;
+}
+
+.plate-45LB, .plate-20KG{
+	width: 80%;
+}
 
 
 .box{
 	background: #f9f9f9;
 	border: 1px solid #ddd;
-	border-radius: 4px;
+	border-radius: 3px;
 	border-bottom-width: 3px;
 	margin-bottom: 10px;
 	overflow: hidden;
