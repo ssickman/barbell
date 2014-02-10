@@ -272,6 +272,13 @@ ul.sets{
 	opacity: 0;
 }
 
+.weight-configuration >  li:nth-child(n+2) .plate{ 
+	font-size: 10px;
+    line-height: 130%;
+    padding-top: 3px;
+    margin-bottom: 2px;
+}
+
 .plate-2--5LB, .plate-1KG{
 	min-width: 36px;
 	width: 30%;

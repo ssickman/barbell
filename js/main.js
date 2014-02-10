@@ -79,9 +79,9 @@ var BarbellView = function()
 		return 'plate-' + String(plateSize).replace('.', '--') + unit + ' plate-count-' + count;
 	};
 	
-	self.padAndReverse = function(plateArray) {
-		//only pad to 4, because we'll never have 5+ plates,
-		for (i = plateArray.length; i < 3; i++) {
+	self.padAndReverse = function(plateArray, platePadding) {
+		
+		for (i = plateArray.length; i < platePadding; i++) {
 			plateArray.push({
 				size:  0,
 				count: 0
@@ -91,14 +91,24 @@ var BarbellView = function()
 		return plateArray.reverse();
 	};
 	
+	
+	self.isSelected = ko.observable(true);
+	
 	self.calculateSets = function() {
-		//first calculate 100%
+		if (self.weightToCalculate() < self.barbellWeight()) {
+			return false;
+		}
+		
+		
 		sets = [];
 		
 		//getSets()
 		thisWarmupScheme = warmupScheme.slice(0);
 		thisWarmupScheme.push({ percent:100, reps: 0 });
 		//getSets()
+		
+		//determine how much padding we need to get sets at bottom of div
+		maxPlates = 0;
 		
 		for (i = 0; i < thisWarmupScheme.length; i++) { 
 			weight = parseInt(self.weightToCalculate() * thisWarmupScheme[i].percent / 100);
@@ -109,17 +119,20 @@ var BarbellView = function()
 			set.percent = thisWarmupScheme[i].percent
 			set.reps    = thisWarmupScheme[i].reps,
 			sets.push(set);
-			console.log(set);
+			
+			maxPlates = set.plateConfiguration.length > maxPlates ? set.plateConfiguration.length : maxPlates;
+			
 		}
 		
 		
 		
 		//keep all plate configs (up to max amount constant)
 		self.allWeightConfigs.unshift({
-			unit:       self.weightUnit(),
-			weight:     self.weightToCalculate(),
-			additional: sets[sets.length-1].additional,
-			sets: sets
+			unit:         self.weightUnit(),
+			weight:       self.weightToCalculate(),
+			additional:   sets[sets.length-1].additional,
+			platePadding: maxPlates,
+			sets:         sets
 		});
 		self.allWeightConfigs.slice(0, 20);
 		//but only display so many
@@ -128,11 +141,8 @@ var BarbellView = function()
 		
 		self.storageHandler.set('weightConfigs', self.allWeightConfigs, true);
 		
-		if (left > 0) {
-			console.log('sorry bro, add some chainz for that extra ' + left + self.weightUnit());
-		}
-		
-		
+		//return focus to input
+		self.isSelected(true);
 		
 	};
 	
@@ -182,7 +192,11 @@ var BarbellView = function()
 	
 	};
 	
-	self.formatConfigurations = function(saveFirst){}
+	self.slideDownConfig = function(e) {
+		if (e.nodeType === 1) {
+			$(e).hide().slideDown();
+		}
+	}
 	
 	
 	
