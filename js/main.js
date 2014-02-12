@@ -1,3 +1,5 @@
+var $ = jQuery.noConflict();
+
 var barbellWeights = {
 	"LB": [45, 35],
 	"KG": [20, 15]
@@ -113,9 +115,7 @@ var BarbellView = function()
 		for (i = 0; i < thisWarmupScheme.length; i++) { 
 			weight = parseInt(self.weightToCalculate() * thisWarmupScheme[i].percent / 100);
 			
-			console.log(thisWarmupScheme[i].percent + ' ' + weight);
-			
-			set         = self.calculateWeight(weight);
+			set         = self.calculateSet(weight);
 			set.percent = thisWarmupScheme[i].percent
 			set.reps    = thisWarmupScheme[i].reps,
 			sets.push(set);
@@ -146,7 +146,7 @@ var BarbellView = function()
 		
 	};
 	
-	self.calculateWeight = function(weightToCalculate) {
+	self.calculateSet = function(weightToCalculate) {
 		//console.log(weightToCalculate);
 		left = weightToCalculate - self.barbellWeight();
 		
@@ -173,10 +173,10 @@ var BarbellView = function()
 			}
 			
 			if (plateCount > 0 && left - weightToSubtract < 0) {
-				plateConfiguration.push({
-					size: plateSize,
-					count: plateCount,		
-				});
+				plateConfiguration.push(new PlateConfiguration(
+					plateSize,
+					plateCount		
+				));
 				
 				plateCount = 0;
 				
@@ -184,11 +184,11 @@ var BarbellView = function()
 			
 		}
 		
-		return {
-			displayWeight: weightToCalculate - left,
-			additional: left,
-			plateConfiguration: plateConfiguration
-		};
+		return new Set(
+			weightToCalculate - left,
+			left,
+			plateConfiguration
+		);
 	
 	};
 	
@@ -200,6 +200,17 @@ var BarbellView = function()
 	
 	
 	
+}
+
+function PlateConfiguration(size, count) {
+	this.size  = size;
+	this.count = count;
+}
+
+function Set(displayWeight, additional, plateConfiguration) {
+	this.displayWeight      = displayWeight;
+	this.additional         = additional;
+	this.plateConfiguration = plateConfiguration;
 }
 
 function StorageHandler()

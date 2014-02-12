@@ -268,15 +268,9 @@ ul.sets{
     color: #777;
     font-size: 15px;
     text-shadow: 1px 1px 0 #f9f9f9;
+    transition: all .5s ease-out;
 } .plate-count-0 {
 	opacity: 0;
-}
-
-.weight-configuration >  li:nth-child(n+2) .plate{ 
-	font-size: 10px;
-    line-height: 130%;
-    padding-top: 3px;
-    margin-bottom: 2px;
 }
 
 .plate-2--5LB, .plate-1KG{
@@ -405,6 +399,16 @@ ul.sets{
    Media Queries
    ========================================================================== */
 
+@media only screen and (max-width:480px) {
+	.weight-configuration >  li:nth-child(n+2) .plate{ 
+		font-size: 10px;
+	    line-height: 130%;
+	    padding-top: 3px;
+	    margin-bottom: 2px;
+	    
+	}
+}
+
 @media only screen and (min-width: 480px) {
 
 /* ====================
@@ -426,6 +430,9 @@ ul.sets{
     nav li:last-child a {
         margin-right: 0;
     }
+    
+    
+    
 
 /* ========================
     INTERMEDIATE: IE Fixes

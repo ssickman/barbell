@@ -3,7 +3,8 @@
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
 <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
 <!-- <html class="no-js" manifest="barbell.manifest"> -->
-<html class="no-js" manifest="barbell.manifest">
+<!-- <html class="no-js" manifest="barbell.manifest"> -->
+<html class="no-js">
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
@@ -86,9 +87,9 @@
 							<li>
 								<div class="weight-reps">
 									<span data-bind="text: displayWeight"></span><span class="units" data-bind="text: $parent.unit"></span> 
-									<span data-bind="visible: reps> -10">@</span> 
-									<span data-bind="text: reps, visible: reps > 0"></span><span data-bind="visible: reps > 0" class="reps">&nbsp;reps</span>
-									</span><span data-bind="visible: reps <= 0" class="reps work-reps">work reps</span>
+									<span data-bind="visible: reps > 0">x</span> 
+									<span data-bind="text: reps, visible: reps > 0"></span>
+									<span data-bind="visible: reps <= -10" class="reps work-reps">work</span>
 								</div>
 		              			<div class="plate-breakdown" data-bind="foreach: $root.padAndReverse(plateConfiguration.slice(0), $parent.platePadding)">
 
