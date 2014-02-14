@@ -214,7 +214,7 @@ var BarbellView = function()
 		}
 	}
 	
-	self.settingsVisible = ko.observable(true);
+	self.settingsVisible = ko.observable(false);
 	self.toggleSettings = function(e) {
 		self.settingsVisible(!self.settingsVisible());
 	}
