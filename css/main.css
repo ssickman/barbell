@@ -71,7 +71,7 @@ ul{
 /* ===== Initializr Styles ==================================================
    Author: Jonathan Verrecchia - verekia.com/initializr/responsive-template
    ========================================================================== */
-*{
+{
     transition: all .5s ease-out;
 }
 
@@ -409,6 +409,10 @@ ul.sets{
 	width: 100%;
 }
 
+h3.weight, ul.sets, .plate, .wrapper, .weight-reps, .title, footer.wrapper h3{
+	transition: all .5s ease-out;
+}
+
 /* ==========================================================================
    Text Formatting
    ========================================================================== */
@@ -470,6 +474,10 @@ div.weight, div.reps{
 	
     .wrapper{
     	width: 100%;
+	}
+	
+	.title, footer.wrapper h3{
+		margin-left: 10px;
 	}
 	
 	.weight-to-calculate-wrap input{
