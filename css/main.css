@@ -71,11 +71,14 @@ ul{
 /* ===== Initializr Styles ==================================================
    Author: Jonathan Verrecchia - verekia.com/initializr/responsive-template
    ========================================================================== */
+*{
+    transition: all .5s ease-out;
+}
 
 body {
     font: 16px/26px Helvetica, Helvetica Neue, Arial;
     font-family: 'Ruda', sans-serif;
-    transition: width .5s ease;
+
 }
 
 .wrapper {
@@ -291,7 +294,6 @@ ul.sets{
     color: #777;
     font-size: 15px;
     text-shadow: 1px 1px 0 #f9f9f9;
-    transition: all .5s ease-out;
 } .plate-count-0 {
 	opacity: 0;
 }
