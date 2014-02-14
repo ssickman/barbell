@@ -32,6 +32,7 @@ var BarbellView = function()
 	self.weightUnit.subscribe(function(newValue) {	
 		//change barbell and plates to appropriate units
 		self.barbellWeights(barbellWeights[newValue]);
+		self.barbellWeight(barbellWeights[newValue][0]);
 		self.plateWeights(plateWeights[newValue]);
 		
 		//restore available plates
@@ -43,8 +44,11 @@ var BarbellView = function()
 	
 	//set barbell choices
 	self.barbellWeights = ko.observableArray(barbellWeights[self.weightUnit()]);
-	self.barbellWeight  = ko.observable();
-	
+	self.barbellWeight  = ko.observable(barbellWeights[self.weightUnit()][0]);
+	self.barbellWeightDisplay = function(weight) {
+		return weight + ' ' + self.weightUnit();
+	}
+
 	//set plate choices and check all initially
 	self.plateWeights = ko.observableArray(plateWeights[self.weightUnit()]);
 	self.plateWeightsAvailable = ko.observableArray(self.storageHandler.getWithDefault('plateWeightsAvailable' + self.weightUnit(), plateWeights[self.weightUnit()], true));
@@ -208,6 +212,11 @@ var BarbellView = function()
 		if (e.nodeType === 1) {
 			$(e).hide().slideDown();
 		}
+	}
+	
+	self.settingsVisible = ko.observable(true);
+	self.toggleSettings = function(e) {
+		self.settingsVisible(!self.settingsVisible());
 	}
 	
 	

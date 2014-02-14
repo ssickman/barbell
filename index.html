@@ -13,7 +13,7 @@
 		<meta name="apple-mobile-web-app-capable" content="yes" />		
 		<!-- <meta name="apple-mobile-web-app-status-bar-style" content="black" /> -->
         
-        <title></title>
+        <title>Barbell Configurator</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width">
 		
@@ -33,9 +33,7 @@
                 <h1 class="title">Barbell Configurator</h1>
                 <nav>
                     <ul>
-                        <li><a href="#">nav ul li a1</a></li>
-                        <li><a href="#">nav ul li a</a></li>
-                        <li><a href="#">nav ul li a</a></li>
+                        <li><a href="#" class="settings" data-bind="click: toggleSettings, css: { toggled: settingsVisible }">settings</a></li>
                     </ul>
                 </nav>
             </header>
@@ -43,11 +41,15 @@
 
         <div class="main-container">
             <div class="main wrapper clearfix">
-				<form class="config settings-box" data-bind="submit: calculateSets">
+	
+				<div class="config settings-box" data-bind="css: { toggled: settingsVisible }">
 					<div class="units-wrap config-wrap">
 						<label class="label units-label">Units</label>
 						<!-- ko foreach: units -->
-						<label><input type="radio" value="LB" data-bind="checkedValue: $data, checked: $root.weightUnit">  <span data-bind="text: $data"></span></label>
+							<label class="unit-label" data>
+								<input type="radio" value="LB" data-bind="checkedValue: $data, checked: $root.weightUnit">  
+								<span data-bind="text: $data"></span>
+							</label>
 						<!-- /ko -->
 	
 					</div>
@@ -55,28 +57,35 @@
 	
 					<div class="barbell-weight-wrap config-wrap">
 						<label for="barbell-weight" class="label">Barbell Weight</label>
-		              	<select id="barbell-weight"  data-bind="
-							options: barbellWeights,
-		              		value: barbellWeight
-		              	"></select>
+						<!-- ko foreach: barbellWeights -->
+							<label class="unit-label">
+								<input type="radio" value="LB" data-bind="checkedValue: $data, checked: $root.barbellWeight">  
+								<span data-bind="text: $root.barbellWeightDisplay($data)"></span>
+							</label>
+						<!-- /ko -->
+						
 					</div>
 									
 					<div class="plate-weights-wrap config-wrap">
+						
 						<label class="label available-plates">Available Plates</label>
+
 						<!-- ko foreach: plateWeights -->
-						<label><input type="checkbox" value="LB" data-bind="checkedValue: $data, checked: $root.plateWeightsAvailable">  <span data-bind="text: $data"></span></label>
+							<label>
+								<input type="checkbox" value="LB" data-bind="checkedValue: $data, checked: $root.plateWeightsAvailable">  
+								<span data-bind="text: $data"></span>
+							</label>
 						<!-- /ko -->
+
 	
 					</div>
-					
-					
-					
-					<div class="weight-to-calculate-wrap config-wrap">
-						<label for="weight-to-calculate" class="label weight">Weight</label>
-						<input id="weight-to-calculate" type="text" pattern="[0-9]*" data-bind="value: weightToCalculate, valueUpdate: 'afterkeydown', hasFocus: isSelected" />
-						<input type="submit" class="button1" value="Go" >
-					</div>
-				</form>				
+				</div>	
+				
+				<form class="weight-to-calculate-wrap config-wrap"  data-bind="submit: calculateSets">
+					<label for="weight-to-calculate" class="label weight">Weight</label>
+					<input id="weight-to-calculate" type="text" pattern="[0-9]*" data-bind="value: weightToCalculate, valueUpdate: 'afterkeydown', hasFocus: isSelected" />
+					<input type="submit" class="button1" value="Go" >
+				</form>			
              	
               	        
               	<ul class="weight-configuration" data-bind="foreach: { data: weightConfigs, afterAdd: slideDownConfig }">
