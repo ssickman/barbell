@@ -63,7 +63,19 @@ var BarbellView = function()
 		}
 	});
 	
+	
 	self.weightToCalculate = ko.observable();
+	//auto calc on 3 digits
+	self.weightToCalculate.subscribe(function(newValue) {	
+		
+		weightLength = newValue.length;
+		
+		if (weightLength == 3) {
+			self.calculateSets();
+			self.isSelected(false);
+			
+		}
+	});
 	
 	self.displayConfigurationsNumber = 3;
 	self.showMoreConfigurations = function() { console.log()
@@ -97,7 +109,7 @@ var BarbellView = function()
 	self.isSelected = ko.observable(true);
 	
 	self.calculateSets = function() {
-		if (self.weightToCalculate() < self.barbellWeight()) {
+		if (self.weightToCalculate() == null || self.weightToCalculate() < self.barbellWeight()) {
 			return false;
 		}
 		
@@ -142,7 +154,7 @@ var BarbellView = function()
 		self.storageHandler.set('weightConfigs', self.allWeightConfigs, true);
 		
 		//return focus to input
-		self.isSelected(true);
+		//self.isSelected(true);
 		
 	};
 	

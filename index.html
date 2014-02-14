@@ -16,7 +16,8 @@
         <title></title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width">
-
+		
+		<link href="http://fonts.googleapis.com/css?family=Ruda:400,700,900" rel="stylesheet" type="text/css">
         <link rel="stylesheet" href="css/normalize.min.css">
         <link rel="stylesheet" href="css/main.css">
 
@@ -42,7 +43,7 @@
 
         <div class="main-container">
             <div class="main wrapper clearfix">
-				<form class="config box" data-bind="submit: calculateSets">
+				<form class="config settings-box" data-bind="submit: calculateSets">
 					<div class="units-wrap config-wrap">
 						<label class="label units-label">Units</label>
 						<!-- ko foreach: units -->
@@ -72,7 +73,7 @@
 					
 					<div class="weight-to-calculate-wrap config-wrap">
 						<label for="weight-to-calculate" class="label weight">Weight</label>
-						<input id="weight-to-calculate" type="text" pattern="[0-9]*" data-bind="value: weightToCalculate, hasFocus: isSelected" />
+						<input id="weight-to-calculate" type="text" pattern="[0-9]*" data-bind="value: weightToCalculate, valueUpdate: 'afterkeydown', hasFocus: isSelected" />
 						<input type="submit" class="button1" value="Go" >
 					</div>
 				</form>				
@@ -86,9 +87,10 @@
               			<ul data-bind="foreach: sets" class="sets">
 							<li>
 								<div class="weight-reps">
-									<span data-bind="text: displayWeight"></span><span class="units" data-bind="text: $parent.unit"></span> 
-									<span data-bind="visible: reps > 0">x</span> 
-									<span data-bind="text: reps, visible: reps > 0"></span>
+									
+									<div class="weight"><span data-bind="text: displayWeight"></span><span class="units" data-bind="text: $parent.unit"></span></div>
+									<div class="reps"><span data-bind="visible: reps > 0">x</span>&nbsp;<span data-bind="text: reps, visible: reps > 0"></span></div>
+									
 									<span data-bind="visible: reps <= -10" class="reps work-reps">work</span>
 								</div>
 		              			<div class="plate-breakdown" data-bind="foreach: $root.padAndReverse(plateConfiguration.slice(0), $parent.platePadding)">
@@ -115,6 +117,7 @@
             <footer class="wrapper">
                 <h3>
                 	<a href="http://sickman.info" id="byline"></a>
+                	<a href="https://github.com/ssickman" class="github-link"><img src="img/GitHub-Mark-Light-120px-plus.png"></a>
                 </h3>
             </footer>
         </div>
