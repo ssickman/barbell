@@ -97,7 +97,7 @@ var BarbellView = function()
 	self.resetInput = function() {
 		self.weightToCalculate(null);
 		self.showGhostLabel(true);
-		self.isSelected(true);
+		//self.isSelected(true);
 	}
 	
 	self.displayConfigurationsNumber = 3;
