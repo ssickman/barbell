@@ -357,8 +357,12 @@ ul.sets{
 }
 
 .plate-2--5LB, .plate-1KG{
-	min-width: 36px;
 	width: 30%;
+}
+
+
+.plate-2--5LB, .plate-2--5KG{
+	min-width: 36px;
 }
 
 .plate-5LB, .plate-2--5KG{
