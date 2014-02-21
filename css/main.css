@@ -17,7 +17,7 @@ body {
     
 }
 
-body, button{
+body, button, input{
 	font-family: 'Ruda', sans-serif;
 }
 
@@ -239,13 +239,28 @@ body{
 	overflow: hidden;
 }
 
-label.weight{
-	margin-top: 8px;
+form.weight-to-calculate-wrap{
+	position: relative;
 }
+
+label.weight {
+    color: #CCCCCC;
+    font-size: 18px;
+    left: 55px;
+    position: absolute;
+    text-align: left;
+    top: 8px;
+    z-index: 2;
+    transition: .25s all ease-out;
+} label.weight.inputFocus {
+	opacity: 0;
+}
+
 
 .weight-to-calculate-wrap input{
 	font-size: 17px;
-    padding: 6px 5px;
+    padding: 6px 9px;
+    width: 275px;
 }
 
 #weight-to-calculate{
@@ -605,7 +620,7 @@ background-image: -moz-linear-gradient(top,#fff,#0066cc);
 	}
 	
 	.weight-to-calculate-wrap input{
-		width: 100px;
+		/* width: 100px; */
 	}
 	
 	.weight-to-calculate-wrap input.button1 {
@@ -620,13 +635,17 @@ background-image: -moz-linear-gradient(top,#fff,#0066cc);
 	input[type=radio] + span {
 		width: 40px;
 	}
+	
+	form.weight-to-calculate-wrap{
+		margin-left: 10px;
+	}
 
 
 }
 
 @media only screen and (min-width: 480px) {
 	.weight-to-calculate-wrap input{
-		width: 150px;
+		/* width: 250px; */
 	}
 	
 	

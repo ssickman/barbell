@@ -84,9 +84,9 @@
 				</div>	
 				
 				<form class="weight-to-calculate-wrap config-wrap"  data-bind="submit: calculateSets">
-					<label for="weight-to-calculate" class="label weight">Weight</label>
-					<input id="weight-to-calculate" type="text" pattern="[0-9]*" data-bind="value: weightToCalculate, valueUpdate: ['afterkeyup', 'blur'], hasFocus: isSelected" />
-					<input type="submit" class="button1" value="Go" >
+					<label for="weight-to-calculate" class="label weight" data-bind="css: { inputFocus: !showGhostLabel() }">Weight</label>
+					<input id="weight-to-calculate" type="text" pattern="[0-9]*" data-bind="value: weightToCalculate, valueUpdate: ['input', 'afterkeyup'], hasFocus: isSelected" />
+					<!-- <input type="submit" class="button1" value="Go" > -->
 				</form>			
              	
               	        
