@@ -12,7 +12,8 @@
 		<meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
 		<meta name="apple-mobile-web-app-capable" content="yes" />		
 		<!-- <meta name="apple-mobile-web-app-status-bar-style" content="black" /> -->
-        
+		<meta name="format-detection" content="telephone=no">
+		        
         <title>Barbell Configurator</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width">
@@ -69,21 +70,21 @@
 					<div class="plate-weights-wrap config-wrap">
 						
 						<label class="label available-plates">Available Plates</label>
-
+						<div class="available-plates">
 						<!-- ko foreach: plateWeights -->
 							<label>
 								<input type="checkbox" value="LB" data-bind="checkedValue: $data, checked: $root.plateWeightsAvailable">  
 								<span data-bind="text: $data"></span>
 							</label>
 						<!-- /ko -->
-
+						</div>
 	
 					</div>
 				</div>	
 				
 				<form class="weight-to-calculate-wrap config-wrap"  data-bind="submit: calculateSets">
 					<label for="weight-to-calculate" class="label weight">Weight</label>
-					<input id="weight-to-calculate" type="text" pattern="[0-9]*" data-bind="value: weightToCalculate, valueUpdate: 'afterkeydown', hasFocus: isSelected" />
+					<input id="weight-to-calculate" type="text" pattern="[0-9]*" data-bind="value: weightToCalculate, valueUpdate: 'afterkeyup', hasFocus: isSelected" />
 					<input type="submit" class="button1" value="Go" >
 				</form>			
              	
