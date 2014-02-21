@@ -249,7 +249,7 @@ label.weight {
     left: 55px;
     position: absolute;
     text-align: left;
-    top: 8px;
+    top: 7px;
     z-index: 2;
     transition: .25s all ease-out;
 } label.weight.inputFocus {
@@ -342,6 +342,7 @@ ul.sets{
     color: #777;
     font-size: 15px;
     text-shadow: 1px 1px 0 #f9f9f9;
+    line-height: 151%;
 } .plate-count-0 {
 	opacity: 0;
 }
@@ -805,7 +806,7 @@ background-image: -moz-linear-gradient(top,#fff,#0066cc);
     background-color: transparent;
     border: 0;
     overflow: hidden;
-    *text-indent: -9999px;
+    text-indent: -9999px;
 }
 
 .ir:before {
