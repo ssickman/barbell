@@ -14,8 +14,11 @@ var warmupScheme = [
 	{ reps: 5, percent: 40},
 	{ reps: 3, percent: 67},
 	{ reps: 2, percent: 80},
-	{ reps: 1, percent: 90},
+	{ reps: 1, percent: 90}
 ];
+
+
+//warmupScheme = [ { reps: 1, percent: 90} ];
 
 var BarbellView = function()
 {
@@ -74,6 +77,7 @@ var BarbellView = function()
 	//auto calc on 3 digits
 	self.weightToCalculate.subscribe(function(newValue) {	
 		self.showGhostLabel(false);
+		
 		weightLength = newValue == null ? 0 : newValue.length;
 		
 		if (weightLength == 3) {
@@ -105,7 +109,6 @@ var BarbellView = function()
 	self.allWeightConfigs = self.storageHandler.getWithDefault('weightConfigs', [], true);
 	self.weightConfigs      = ko.observableArray(self.allWeightConfigs.slice(0, self.displayConfigurationsNumber));
 	
-	//console.log(self.weightConfigs());
 	
 	//for fractional plates
 	self.plateClass = function(plateSize, unit, count) {
@@ -124,11 +127,23 @@ var BarbellView = function()
 		return plateArray.reverse();
 	};
 	
+	//don't use the 2.5, 5lb/1, 2.5kg plates on warmup sets if this option is checked, causes fewer plate loadings when it doesn't matter
+	self.ignoreSmallPlates = ko.observable(self.storageHandler.getWithDefault('ignoreSmallPlates', true) != 'false');
+	self.ignoreSmallPlates.subscribe(function(newValue){
+		self.storageHandler.set('ignoreSmallPlates', newValue);
+	});
+	
+	
 	self.calculateSets = function() {
+		
+		
 		if (self.weightToCalculate() == null || self.weightToCalculate() < self.barbellWeight() || isNaN(self.weightToCalculate())) {
 			return false;
 		}
 		
+		if (self.settingsVisible()) {
+			self.toggleSettings();
+		}
 		
 		sets = [];
 		
@@ -142,8 +157,8 @@ var BarbellView = function()
 		
 		for (i = 0; i < thisWarmupScheme.length; i++) { 
 			weight = parseInt(self.weightToCalculate() * thisWarmupScheme[i].percent / 100);
-			
-			set         = self.calculateSet(weight);
+
+			set         = self.calculateSet(weight, self.ignoreSmallPlates() && i != thisWarmupScheme.length - 1);
 			set.percent = thisWarmupScheme[i].percent
 			set.reps    = thisWarmupScheme[i].reps,
 			sets.push(set);
@@ -158,7 +173,6 @@ var BarbellView = function()
 		self.allWeightConfigs.unshift({
 			unit:         self.weightUnit(),
 			weight:       self.weightToCalculate(),
-			additional:   sets[sets.length-1].additional,
 			platePadding: maxPlates,
 			sets:         sets
 		});
@@ -174,13 +188,17 @@ var BarbellView = function()
 		
 	};
 	
-	self.calculateSet = function(weightToCalculate) {
+	self.calculateSet = function(weightToCalculate, ignoreSmallPlates, noRecursion) {
 		//console.log(weightToCalculate);
 		left = weightToCalculate - self.barbellWeight();
 		
 		platesToUse = self.plateWeightsAvailable().slice(0);
 		platesToUse.sort(function(a, b) { return a - b; });
-
+		
+		if (ignoreSmallPlates) {
+			platesToUse.shift(); platesToUse.shift()
+		}
+		
 		plateConfiguration = [];
 		plateCount = 0;
 		
@@ -212,11 +230,59 @@ var BarbellView = function()
 			
 		}
 		
-		return new Set(
+		originalSet = new Set(
 			weightToCalculate - left,
 			left,
 			plateConfiguration
 		);
+		bestCandidateSet = originalSet;
+		
+		
+		if (1==2 && ignoreSmallPlates && !noRecursion) {
+			//what is the ideal weight we should calculate, using all plates available
+			targetSet = self.calculateSet(weightToCalculate, false);
+			//the smallest difference between the targetSet weight and the bestCandidate (so far)
+			minWeightDifference = targetSet.displayWeight - bestCandidateSet.displayWeight;
+			
+			//start at bottom of threshold, lighter could use fewer (e.g., knock off the 2.5lb plates)
+			candidateWeight = parseInt(weightToCalculate * .8); 
+			thresholdWeight = parseInt(weightToCalculate * 1.05);
+			minWeightToAdd  = self.weightUnit() == 'LB' ? 5 : 2; 
+			
+			
+			console.log('target set weight ' + targetSet.displayWeight);
+			console.log(weightToCalculate + ' ' + candidateWeight + ' ' + thresholdWeight + ' ' + minWeightToAdd);
+		
+			ii =0;
+			while (candidateWeight <= thresholdWeight && ii++ < 100) {
+				newSet = self.calculateSet(candidateWeight, true, true);
+				candidateWeight += minWeightToAdd;
+				
+				console.log('candidate: ' + candidateWeight);
+				console.log('new display: ' + newSet.displayWeight);
+				
+				//if we need less plates, make that the new warmup weight, but keep going until we are out of tolerance (80% ?)
+				//if (newSet.plateConfiguration.length < bestCandidateSet.plateConfiguration.length) {
+					//bestCandidateSet = newSet;
+				//}
+				
+				//if the newSet is closer to the target
+				newSetDifference = Math.abs(newSet.displayWeight - targetSet.displayWeight);
+				if (newSetDifference < minWeightDifference) {
+					bestCandidateSet = newSet;
+					minWeightDifference = newSetDifference;
+				
+				//or if it's the same with fewer plates
+				} else if (
+					newSetDifference == minWeightDifference && 
+					newSet.plateConfiguration.length < bestCandidateSet.plateConfiguration.length
+				) {
+					bestCandidateSet = newSet;
+				}
+			}
+		}
+		
+		return bestCandidateSet;
 	
 	};
 	

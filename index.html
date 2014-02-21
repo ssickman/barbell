@@ -81,6 +81,14 @@
 						</div>
 	
 					</div>
+					
+					<div class="single-checkbox config-wrap">
+						<label class="single-checkbox ignore-small-plates">
+							<input type="checkbox" id="ignore-small-plates" class="single-checkbox ignore-small-plates" data-bind="checked: ignoreSmallPlates">
+							<span><span>&nbsp;</span></span>
+						</label>
+						<label for="ignore-small-plates" class="single-checkbox-label ignore-small-plates label">Ignore small plates on warmup</label>
+					</div>
 				</div>	
 				
 				<form class="weight-to-calculate-wrap config-wrap"  data-bind="submit: calculateSets">
@@ -111,11 +119,7 @@
 		              			<div class="plate-breakdown" data-bind="visible: displayWeight <= $root.barbellWeight">bar</div>
 		              		</li>
 						</ul>              			
-               			<div class="additional-weight" data-bind="visible: additional > 10000">
-               				<span data-bind="text:additional"></span><span class="units" data-bind="text: unit"  ></span>
-               				&nbsp;left
-               			</div>
-              			
+               			              			
               		</li>
               	</ul>
               	

@@ -168,6 +168,7 @@ nav a {
 div.settings-box{
 	-moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;
 	width:480px;
+	min-width: 315px;
 	position: absolute;
 	top: -300px;
 	right: 0;
@@ -181,6 +182,14 @@ div.settings-box{
 div.available-plates{
 	overflow: hidden;
 }
+
+div.single-checkbox{
+	border-top: 2px solid #F0F0F0;
+    margin-top: 30px;
+    padding-top: 20px;
+}
+
+
 
 
 nav a:hover,
@@ -466,7 +475,7 @@ h3.weight, ul.sets, .plate, .wrapper, .weight-reps, .title, footer.wrapper h3 {
 	transition: all .1s ease-out;
 }
 
-.plate-weights-wrap label {
+.plate-weights-wrap label, .single-checkbox label{
 	float: left;
 }
 
@@ -498,6 +507,19 @@ div.weight, div.reps{
 	color: #888;
 }
 
+.label.ignore-small-plates{
+	
+}
+
+label.single-checkbox-label{
+	clear:none;
+	width: auto !important;;
+	position: relative;
+	top: 0px;
+	margin-left: 15px;
+	margin-right: 0;
+	text-align: left;
+}
 
 /* ==========================================================================
    Form Inputs
@@ -536,18 +558,6 @@ input[type=radio] + span, input[type=checkbox] + span {
 	-webkit-box-shadow: inset 0 1px 0 rgba(255,255,255,0.2),0 1px 2px rgba(0,0,0,0.05);
 	-moz-box-shadow: inset 0 1px 0 rgba(255,255,255,0.2),0 1px 2px rgba(0,0,0,0.05);
 	box-shadow: inset 0 1px 0 rgba(255,255,255,0.2),0 1px 2px rgba(0,0,0,0.05);
-	
-	
-	/*
-background-image: none;
-	outline: 0;
-	-webkit-box-shadow: inset 0 2px 4px rgba(0,0,0,0.15),0 1px 2px rgba(0,0,0,0.05);
-	-moz-box-shadow: inset 0 2px 4px rgba(0,0,0,0.15),0 1px 2px rgba(0,0,0,0.05);
-	box-shadow: inset 0 2px 4px rgba(0,0,0,0.15),0 1px 2px rgba(0,0,0,0.05);
-	background-color:#e0e0e0;
-*/
-
-	
 }
 
 input[type=radio] + span {
@@ -566,18 +576,71 @@ input[type=checkbox] + span {
 	box-shadow: inset 0 2px 4px rgba(0,0,0,0.15),0 1px 2px rgba(0,0,0,0.05);
 	background-color:#e0e0e0;
 
-	/*
-background-image: -moz-linear-gradient(top,#fff,#0066cc);
-	background-image: -webkit-gradient(linear,0 0,0 100%,from(#fff),to(#0066cc));
-	background-image: -webkit-linear-gradient(top,#fff,#0066cc);
-	background-image: -o-linear-gradient(top,#fff,#0066cc);
-	background-image: linear-gradient(to bottom,#fff,#0066cc);
-*/
+}
+
+label.single-checkbox input[type=checkbox] + span{
+	padding: 0;
+	border-radius:20px;
 	
+	-webkit-box-shadow: none;
+	-moz-box-shadow: none;
+	box-shadow: none;
+	
+	
+} label.single-checkbox input[type=checkbox]:checked + span{
+	background: lightBlue;
+} 
+
+
+label.single-checkbox input[type=checkbox] + span > span{
+	border-radius:20px;	
+	background: none repeat scroll 0 0 #5dbfdf;
+    font-size: 0;
+    left: -0.2px;
+    line-height: 0;
+    margin: 0;
+    padding: 7px;
+    position: relative;
+    top: -4.32px;
+    transition: .25s all ease-out;
+    opacity: 0;
+} label.single-checkbox input[type=checkbox]:checked + span > span{
+	opacity: 1;
+}
+
+/*
+
+input[type=checkbox].single-checkbox {
+	display:none;
+}
+
+input[type=checkbox].single-checkbox + label.single-checkbox-label {
+	padding-left:23px;
+	height:18px; 
+	display:inline-block;
+	line-height:18px;
+	background-repeat:no-repeat;
+	background-position: 0 0;
+	font-size:18px;
+	vertical-align:middle;
+	cursor:pointer;
 
 }
 
+input[type=checkbox].single-checkbox:checked + label.single-checkbox-label {
+	background-position: 0 -18px;
+}
+label.single-checkbox-label {
+	background-image:url(http://csscheckbox.com/checkboxes/u/csscheckbox_b616a166cb716aade45d232de5180ddc.png);
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
 
+*/
 
 /* ==========================================================================
    Media Queries
