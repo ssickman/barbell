@@ -18,7 +18,7 @@ var warmupScheme = [
 ];
 
 
-//warmupScheme = [ { reps: 1, percent: 90} ];
+//warmupScheme = [ { reps: 1, percent: 67} ];
 
 var BarbellView = function()
 {
@@ -156,12 +156,17 @@ var BarbellView = function()
 		maxPlates = 0;
 		
 		for (i = 0; i < thisWarmupScheme.length; i++) { 
-			weight = parseInt(self.weightToCalculate() * thisWarmupScheme[i].percent / 100);
-
-			set         = self.calculateSet(weight, self.ignoreSmallPlates() && i != thisWarmupScheme.length - 1);
-			set.percent = thisWarmupScheme[i].percent
-			set.reps    = thisWarmupScheme[i].reps,
-			sets.push(set);
+						
+			sets.push(new SetFactory(
+				parseInt(self.weightToCalculate() * thisWarmupScheme[i].percent / 100),
+				self.barbellWeight(),
+				self.plateWeightsAvailable().slice(0),
+				self.ignoreSmallPlates() && i != thisWarmupScheme.length - 1,
+				{
+					percent: thisWarmupScheme[i].percent,
+					reps:    thisWarmupScheme[i].reps
+				}
+			));
 			
 			maxPlates = set.plateConfiguration.length > maxPlates ? set.plateConfiguration.length : maxPlates;
 			
@@ -182,109 +187,9 @@ var BarbellView = function()
 		
 		
 		self.storageHandler.set('weightConfigs', self.allWeightConfigs, true);
-		
-		//return focus to input
-		//self.isSelected(true);
-		
 	};
 	
-	self.calculateSet = function(weightToCalculate, ignoreSmallPlates, noRecursion) {
-		//console.log(weightToCalculate);
-		left = weightToCalculate - self.barbellWeight();
-		
-		platesToUse = self.plateWeightsAvailable().slice(0);
-		platesToUse.sort(function(a, b) { return a - b; });
-		
-		if (ignoreSmallPlates) {
-			platesToUse.shift(); platesToUse.shift()
-		}
-		
-		plateConfiguration = [];
-		plateCount = 0;
-		
-		while (left > 0 && platesToUse.length > 0) {
-			//go from heaviest to lightest
-			plateSize = platesToUse[platesToUse.length - 1];
-			//need a balanced bar
-			weightToSubtract =  plateSize * 2;
-			
-			
-			if (left - weightToSubtract >= 0) {
-				left -= weightToSubtract;
-			
-				plateCount++;
-				//console.log(plateCount + ' ' + plateSize);
-			} else {
-				platesToUse.pop();
-			}
-			
-			if (plateCount > 0 && left - weightToSubtract < 0) {
-				plateConfiguration.push(new PlateConfiguration(
-					plateSize,
-					plateCount		
-				));
-				
-				plateCount = 0;
-				
-			}
-			
-		}
-		
-		originalSet = new Set(
-			weightToCalculate - left,
-			left,
-			plateConfiguration
-		);
-		bestCandidateSet = originalSet;
-		
-		
-		if (1==2 && ignoreSmallPlates && !noRecursion) {
-			//what is the ideal weight we should calculate, using all plates available
-			targetSet = self.calculateSet(weightToCalculate, false);
-			//the smallest difference between the targetSet weight and the bestCandidate (so far)
-			minWeightDifference = targetSet.displayWeight - bestCandidateSet.displayWeight;
-			
-			//start at bottom of threshold, lighter could use fewer (e.g., knock off the 2.5lb plates)
-			candidateWeight = parseInt(weightToCalculate * .8); 
-			thresholdWeight = parseInt(weightToCalculate * 1.05);
-			minWeightToAdd  = self.weightUnit() == 'LB' ? 5 : 2; 
-			
-			
-			console.log('target set weight ' + targetSet.displayWeight);
-			console.log(weightToCalculate + ' ' + candidateWeight + ' ' + thresholdWeight + ' ' + minWeightToAdd);
-		
-			ii =0;
-			while (candidateWeight <= thresholdWeight && ii++ < 100) {
-				newSet = self.calculateSet(candidateWeight, true, true);
-				candidateWeight += minWeightToAdd;
-				
-				console.log('candidate: ' + candidateWeight);
-				console.log('new display: ' + newSet.displayWeight);
-				
-				//if we need less plates, make that the new warmup weight, but keep going until we are out of tolerance (80% ?)
-				//if (newSet.plateConfiguration.length < bestCandidateSet.plateConfiguration.length) {
-					//bestCandidateSet = newSet;
-				//}
-				
-				//if the newSet is closer to the target
-				newSetDifference = Math.abs(newSet.displayWeight - targetSet.displayWeight);
-				if (newSetDifference < minWeightDifference) {
-					bestCandidateSet = newSet;
-					minWeightDifference = newSetDifference;
-				
-				//or if it's the same with fewer plates
-				} else if (
-					newSetDifference == minWeightDifference && 
-					newSet.plateConfiguration.length < bestCandidateSet.plateConfiguration.length
-				) {
-					bestCandidateSet = newSet;
-				}
-			}
-		}
-		
-		return bestCandidateSet;
 	
-	};
 	
 	self.slideDownConfig = function(e) {
 		if (e.nodeType === 1) {
@@ -301,16 +206,91 @@ var BarbellView = function()
 	
 }
 
+
 function PlateConfiguration(size, count) {
 	this.size  = size;
 	this.count = count;
 }
 
-function Set(displayWeight, additional, plateConfiguration) {
+function Set(displayWeight, plateConfiguration) {	
 	this.displayWeight      = displayWeight;
-	this.additional         = additional;
 	this.plateConfiguration = plateConfiguration;
 }
+
+
+function SetFactory(weightToCalculate, barbellWeight, platesToUse, ignoreSmallPlates, setDisplayData) {
+	this.weightToCalculate = weightToCalculate;
+	this.barbellWeight     = barbellWeight;
+	
+	this.platesToUse       = platesToUse;
+	this.platesToUse.sort(function(a, b) { return a - b; });
+	
+	this.ignoreSmallPlates = ignoreSmallPlates
+	
+	//get rid of the 2 smallest plates during warmups
+	if (this.ignoreSmallPlates) {
+		this.platesToUse.shift(); 
+		this.platesToUse.shift()
+	}
+	
+	set = this.calculateSet(this.weightToCalculate, this.barbellWeight, this.platesToUse);
+	
+	if (typeof(setDisplayData) == 'object') {
+		for (key in setDisplayData) {
+			set[key] = setDisplayData[key];
+		}
+	}
+	
+	return set;
+}
+SetFactory.prototype.calculateSet = function(weightToCalculate, barbellWeight, platesToUse) {
+	//console.log(weightToCalculate);
+	left = weightToCalculate - barbellWeight;
+			
+	plateConfiguration = [];
+	plateCount = 0;
+	
+	while (left > 0 && platesToUse.length > 0) {
+		//go from heaviest to lightest
+		plateSize = platesToUse[platesToUse.length - 1];
+		
+		//need a balanced bar
+		weightToSubtract =  plateSize * 2;
+		
+		
+		if (left - weightToSubtract >= 0) {
+			left -= weightToSubtract;
+		
+			plateCount++;
+			//console.log(plateCount + ' ' + plateSize);
+		} else {
+			platesToUse.pop();
+		}
+		
+		if (plateCount > 0 && left - weightToSubtract < 0) {
+			plateConfiguration.push(new PlateConfiguration(
+				plateSize,
+				plateCount		
+			));
+			
+			plateCount = 0;
+			
+		}
+		
+	}
+	
+	originalSet = new Set(
+		this.weightToCalculate - left,
+		plateConfiguration
+	);
+	bestCandidateSet = originalSet;
+	
+	
+	return bestCandidateSet;
+
+};
+
+
 
 function StorageHandler()
 {
@@ -358,3 +338,49 @@ StorageHandler.prototype.set = function(key, value, isArray)
 ko.applyBindings(new BarbellView());
 
 //BarbellView.weightUnit('KG');
+
+/*
+if (1==1 && ignoreSmallPlates && !noRecursion) {
+	//what is the ideal weight we should calculate, using all plates available
+	targetSet = self.calculateSet(weightToCalculate, false);
+	//the smallest difference between the targetSet weight and the bestCandidate (so far)
+	minWeightDifference = targetSet.displayWeight - bestCandidateSet.displayWeight;
+	
+	//start at bottom of threshold, lighter could use fewer (e.g., knock off the 2.5lb plates)
+	candidateWeight = parseInt(weightToCalculate * .8); 
+	thresholdWeight = parseInt(weightToCalculate * 1.05);
+	minWeightToAdd  = self.weightUnit() == 'LB' ? 5 : 2; 
+	
+	
+	console.log('target set weight ' + targetSet.displayWeight);
+	console.log(weightToCalculate + ' ' + candidateWeight + ' ' + thresholdWeight + ' ' + minWeightToAdd);
+
+	ii =0;
+	while (candidateWeight <= thresholdWeight && ii++ < 100) {
+		newSet = self.calculateSet(candidateWeight, true, true);
+		candidateWeight += minWeightToAdd;
+		
+		console.log('candidate: ' + candidateWeight);
+		console.log('new display: ' + newSet.displayWeight);
+		
+		//if we need less plates, make that the new warmup weight, but keep going until we are out of tolerance (80% ?)
+		//if (newSet.plateConfiguration.length < bestCandidateSet.plateConfiguration.length) {
+			//bestCandidateSet = newSet;
+		//}
+		
+		//if the newSet is closer to the target
+		newSetDifference = Math.abs(newSet.displayWeight - targetSet.displayWeight);
+		if (newSetDifference < minWeightDifference) {
+			bestCandidateSet = newSet;
+			minWeightDifference = newSetDifference;
+		
+		//or if it's the same with fewer plates
+		} else if (
+			newSetDifference == minWeightDifference && 
+			newSet.plateConfiguration.length < bestCandidateSet.plateConfiguration.length
+		) {
+			bestCandidateSet = newSet;
+		}
+	}
+}
+*/
