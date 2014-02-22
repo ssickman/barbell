@@ -136,7 +136,6 @@ var BarbellView = function()
 	
 	self.calculateSets = function() {
 		
-		
 		if (self.weightToCalculate() == null || self.weightToCalculate() < self.barbellWeight() || isNaN(self.weightToCalculate())) {
 			return false;
 		}
@@ -147,12 +146,10 @@ var BarbellView = function()
 		
 		sets = [];
 		
-		//getSets()
 		thisWarmupScheme = warmupScheme.slice(0);
 		thisWarmupScheme.push({ percent:100, reps: 0 });
-		//getSets()
 		
-		//determine how much padding we need to get sets at bottom of div
+		//determine how much padding we need to position sets at bottom of div
 		maxPlates = 0;
 		
 		for (i = 0; i < thisWarmupScheme.length; i++) { 
@@ -171,8 +168,6 @@ var BarbellView = function()
 			maxPlates = set.plateConfiguration.length > maxPlates ? set.plateConfiguration.length : maxPlates;
 			
 		}
-		
-		
 		
 		//keep all plate configs (up to max amount constant)
 		self.allWeightConfigs.unshift({
