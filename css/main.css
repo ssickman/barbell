@@ -397,7 +397,19 @@ ul.sets{
 .box{
 	margin-bottom: 05px;
 	overflow: hidden;
+} 
+
+/*
+.weight-configuration > li{
+	transform: scaleY(1);    
+    transform-origin: top;
+    transition: transform 2.26s ease-out;
 }
+
+.slidedown{
+	transform: scaleY(0);
+}
+*/
 
 .button1 {
 	-moz-box-shadow:inset 0px 1px 0px 0px #ffffff;
