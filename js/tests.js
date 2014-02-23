@@ -89,6 +89,16 @@ module('class construction');
 		notEqual(st.getWithDefault(arrayKey, arrayContent1), arrayContent1, 'does not equal default passed in');
 	});
 	
+	test('plate optimizer', function(){
+		po = new PlateOptimizer();
+		
+		try {
+			po.optimize('');	
+		} catch (error) {
+			equal(error.message, 'PlateOptimizer.optimize accepts only Set() objects', 'type checking');
+		}
+	});
+	
 
 localStorage.clear();
 for (key in existingLocalStorage) {
