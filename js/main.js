@@ -9,7 +9,7 @@ var BarbellView = function()
         'LB', 'KG'
     ]);
 	
-	self.storageHandler = new StorageHandler();
+	self.storageHandler = new StorageHandler('production');
 	
 	self.weightUnit = ko.observable(self.storageHandler.getWithDefault('weightUnit', 'LB'));
 	

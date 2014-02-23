@@ -11,7 +11,7 @@ function Set(displayWeight, plateConfiguration) {
 
 function SetFactory(weightToCalculate, barbellWeight, platesToUsePassed, ignoreSmallPlates, setDisplayData) {
 	
-	platesToUse = platesToUsePassed.slice();
+	var platesToUse = platesToUsePassed.slice();
 	platesToUse.sort(function(a, b) { return a - b; });
 	
 	//get rid of the 2 smallest plates during warmups
@@ -21,9 +21,9 @@ function SetFactory(weightToCalculate, barbellWeight, platesToUsePassed, ignoreS
 	}
 	
 	//make a copy to store on the set
-	setPlatesToUse = platesToUse.slice(0);
+	var setPlatesToUse = platesToUse.slice(0);
 
-	set = this.calculateSet(weightToCalculate, barbellWeight, platesToUse);
+	var set = this.calculateSet(weightToCalculate, barbellWeight, platesToUse);
 
 	set.barbellWeight     = barbellWeight;
 	set.platesToUse       = setPlatesToUse; 
@@ -40,17 +40,17 @@ function SetFactory(weightToCalculate, barbellWeight, platesToUsePassed, ignoreS
 
 SetFactory.prototype.calculateSet = function(weightToCalculate, barbellWeight, platesToUse) {
 	//console.log(weightToCalculate);
-	left = weightToCalculate - barbellWeight;
+	var left = weightToCalculate - barbellWeight;
 			
-	plateConfiguration = [];
-	plateCount = 0;
+	var plateConfiguration = [];
+	var plateCount = 0;
 
 	while (left > 0 && platesToUse.length > 0) {
 		//go from heaviest to lightest
-		plateSize = platesToUse[platesToUse.length - 1];
+		var plateSize = platesToUse[platesToUse.length - 1];
 		
 		//need a balanced bar
-		weightToSubtract =  plateSize * 2;
+		var weightToSubtract =  plateSize * 2;
 		
 		//we can still use this plate
 		if (left - weightToSubtract >= 0) {
@@ -91,13 +91,13 @@ function PlateOptimizer()
 			return set;
 		}
 		
-		bestCandidateSet = set;
-		platesToUse = set.platesToUse.slice();
+		var bestCandidateSet = set;
+		var platesToUse = set.platesToUse.slice();
 		
 		if (1==2) {
 			
 			//what is the ideal weight we should calculate, using all plates available
-			targetSet = new SetFactory(
+			var targetSet = new SetFactory(
 				set.displayWeight,
 				set.barbellWeight,
 				set.platesToUse,
@@ -109,8 +109,8 @@ function PlateOptimizer()
 				}
 			);
 			
-			minThreshold = .9;
-			maxThreshold = 1 + ((100 - set.percent) / 4 / 100);
+			var minThreshold = .9;
+			var maxThreshold = 1 + ((100 - set.percent) / 4 / 100);
 			
 			console.log('max threshold ' + maxThreshold);
 			
@@ -118,9 +118,9 @@ function PlateOptimizer()
 			minWeightDifference = targetSet.displayWeight - bestCandidateSet.displayWeight;
 			
 			//start at bottom of threshold, lighter could use fewer (e.g., knock off the 2.5lb plates)
-			candidateWeight = parseInt(set.displayWeight * minThreshold); 
-			thresholdWeight = parseInt(set.displayWeight * maxThreshold);
-			minWeightToAdd  = set.units == 'LB' ? 5 : 2; 
+			var candidateWeight = parseInt(set.displayWeight * minThreshold); 
+			var thresholdWeight = parseInt(set.displayWeight * maxThreshold);
+			var minWeightToAdd  = set.units == 'LB' ? 5 : 2; 
 			
 			
 			console.log('target set weight ' + targetSet.displayWeight);
@@ -129,7 +129,7 @@ function PlateOptimizer()
 			ii = 0;
 			while (candidateWeight <= thresholdWeight && ii++ < 100) {
 
-				newSet = new SetFactory(
+				var newSet = new SetFactory(
 					candidateWeight,
 					set.barbellWeight,
 					set.platesToUse,
@@ -165,11 +165,22 @@ function PlateOptimizer()
 }
 
 
-function StorageHandler()
+function StorageHandler(environment)
 {
+	if (typeof(environment) != 'string' || environment.length == 0) {
+		throw new Error('Environment (production/testing) must be set');
+	}
+	
+	this.environment = environment;
+	
 	this.isSupported = function()
 	{
 		return typeof(Storage) !== 'undefined';
+	}
+	
+	this.getKey = function(key)
+	{
+		return this.environment + '-' + key;
 	}
 	
 	this.getWithDefault = function(key, defaultValue, isArray)
@@ -179,9 +190,9 @@ function StorageHandler()
 		if (this.isSupported() && this.storageKeyExists(key)) {
 			
 			if (isArray) {
-				return JSON.parse(localStorage[key]);
+				return JSON.parse(localStorage[this.getKey(key)]);
 			} else {
-				return localStorage[key];
+				return localStorage[this.getKey(key)];
 			}
 		} else {
 			return defaultValue;
@@ -190,7 +201,7 @@ function StorageHandler()
 	
 	this.storageKeyExists = function(key) 
 	{
-		return typeof(localStorage[key]) !== 'undefined';
+		return typeof(localStorage[this.getKey(key)]) !== 'undefined';
 	}
 	
 	this.set = function(key, value, isArray)
@@ -201,7 +212,7 @@ function StorageHandler()
 				value = JSON.stringify(value);
 			}
 		
-			localStorage[key] = value;
+			localStorage[this.getKey(key)] = value;
 		}
 	}
 }

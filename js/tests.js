@@ -1,9 +1,4 @@
-existingLocalStorage = {};
-for (key in localStorage) {
-	existingLocalStorage[key] = localStorage[key].replace('', '');
-}
-localStorage.clear();
-
+clearTestItems();
 
 module('class construction');
 	pcSize  = 1;
@@ -52,8 +47,7 @@ module('class construction');
 	});
 	
 	test('storage handler', function(){
-		localStorage.clear();
-		st = new StorageHandler();
+		st = new StorageHandler('test');
 		
 		equal(st.isSupported(), true, 'storage supported');
 		
@@ -99,9 +93,20 @@ module('class construction');
 		}
 	});
 	
-
-localStorage.clear();
-for (key in existingLocalStorage) {
-	localStorage[key] = existingLocalStorage[key].replace('', '');
-}
-
+clearTestItems();
+	
+	
+function clearTestItems()
+{
+	if (typeof(Storage) == 'undefined') {
+		return false;
+	}
+	
+	var key;
+	for (key in localStorage) {
+		if (key.indexOf('test-') === 0) {
+			localStorage.removeItem(key);
+		}
+	}
+	delete key;
+}	
