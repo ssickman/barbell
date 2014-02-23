@@ -125,18 +125,18 @@ var BarbellView = function()
 			self.toggleSettings();
 		}
 		
-		sets = [];
+		var sets = [];
 		
 		thisWarmupScheme = warmupScheme.slice(0);
 		thisWarmupScheme.push({ percent:100, reps: 0 });
 		
 		//determine how much padding we need to position sets at bottom of div
-		maxPlates = 0;
+		var maxPlates = 0;
 		
-		po = new PlateOptimizer();
+		var po = new PlateOptimizer();
 		
-		for (i = 0; i < thisWarmupScheme.length; i++) { 
-			set = new SetFactory(
+		for (var i = 0; i < thisWarmupScheme.length; i++) { 
+			var set = new SetFactory(
 				parseInt(self.weightToCalculate() * thisWarmupScheme[i].percent / 100),
 				self.barbellWeight(),
 				self.plateWeightsAvailable().slice(0),

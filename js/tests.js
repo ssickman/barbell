@@ -1,6 +1,8 @@
-clearTestItems();
+QUnit.done(function() {
+  clearTestItems();
+});
 
-module('class construction');
+module('Class Construction');
 	pcSize  = 1;
 	pcCount = 1;
 	sDisplayWeight      = 135;
@@ -46,6 +48,17 @@ module('class construction');
 		equal(set.units, 'LB');
 	});
 	
+	test('plate optimizer', function(){
+		po = new PlateOptimizer();
+		
+		try {
+			po.optimize('');	
+		} catch (error) {
+			equal(error.message, 'PlateOptimizer.optimize accepts only Set() objects', 'type checking');
+		}
+	});
+	
+module('StorageHandler');	
 	test('storage handler', function(){
 		st = new StorageHandler('test');
 		
@@ -83,18 +96,38 @@ module('class construction');
 		notEqual(st.getWithDefault(arrayKey, arrayContent1), arrayContent1, 'does not equal default passed in');
 	});
 	
-	test('plate optimizer', function(){
-		po = new PlateOptimizer();
+module('BarbellView');
+	test('initialization', function(){
+		//expect(0);
 		
-		try {
-			po.optimize('');	
-		} catch (error) {
-			equal(error.message, 'PlateOptimizer.optimize accepts only Set() objects', 'type checking');
-		}
-	});
+		var defaultUnit = 'LB';
+		
+		bv = new BarbellView();
+		ko.applyBindings(bv);
+		
+		ok(bv instanceof BarbellView, 'correct type');
+		
+		deepEqual(bv.weightUnit(), defaultUnit, 'default unit: LB');
+		
+		ok(bv.storageHandler instanceof StorageHandler, 'correct type');
+		
+		deepEqual(bv.barbellWeights(), barbellWeights[defaultUnit], 'barbell weights loaded');
 	
-clearTestItems();
-	
+		deepEqual(bv.plateWeights(), plateWeights[defaultUnit], 'plate weights loaded');
+		deepEqual(bv.plateWeightsAvailable(), plateWeights[defaultUnit], 'weights available equals all weights for given units');
+		deepEqual(bv.plateWeights(), bv.plateWeightsAvailable() , 'weights available equals BarbellView copy of default');
+
+		ok(bv.showGhostLabel(), 'weight label on by default');
+	});	
+
+
+
+
+QUnit.done(function(details) {
+  clearTestItems();
+  console.log( "Total: ", details.total, " | Failed: ", details.failed, " Passed: ", details.passed, " Runtime: ", details.runtime );
+});	
+
 	
 function clearTestItems()
 {
@@ -102,11 +135,9 @@ function clearTestItems()
 		return false;
 	}
 	
-	var key;
-	for (key in localStorage) {
+	for (var key in localStorage) {
 		if (key.indexOf('test-') === 0) {
 			localStorage.removeItem(key);
 		}
 	}
-	delete key;
 }	

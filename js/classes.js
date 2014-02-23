@@ -30,7 +30,7 @@ function SetFactory(weightToCalculate, barbellWeight, platesToUsePassed, ignoreS
 	set.ignoreSmallPlates = ignoreSmallPlates;
 	
 	if (typeof(setDisplayData) == 'object') {
-		for (key in setDisplayData) {
+		for (var key in setDisplayData) {
 			set[key] = setDisplayData[key];
 		}
 	}
