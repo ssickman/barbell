@@ -115,6 +115,75 @@ module('Class Functionality');
 		
 	});
 	
+	test('Set Factory Calculation Basics KG', function(){	
+		var pWeights2 = plateWeights.KG.slice(0);
+		var simpleSetFactory = function(weightToCalculate, percentToCalculate) {
+			var pWeights = plateWeights.LB.slice(0)
+			return  new SetFactory(
+				weightToCalculate,
+				20,
+				pWeights2,
+				false,
+				{
+					percent: percentToCalculate,
+					reps:    1,
+					units:   'KG'
+				}
+			);
+		}
+		
+		var testPlateConfiguration1 = [
+			new PlateConfiguration(20, 1)
+		];
+		var set1 = simpleSetFactory(60, 100);
+		equal(60, set1.displayWeight);
+		deepEqual(set1.plateConfiguration, testPlateConfiguration1, '1x20');
+		
+		var testPlateConfiguration2 = [
+			new PlateConfiguration(20, 1),
+			new PlateConfiguration(15, 1)
+		];
+		var set2 = simpleSetFactory(90, 100);
+		equal(90, set2.displayWeight);
+		deepEqual(set2.plateConfiguration, testPlateConfiguration2, '1x20 + 1x15');
+		
+	});
+	
+	
+	test('Set Factory Calculation Basics KG', function(){	
+		var pWeights2 = plateWeights.KG.slice(0);
+		var simpleSetFactory = function(weightToCalculate, percentToCalculate) {
+			var pWeights = plateWeights.LB.slice(0)
+			return  new SetFactory(
+				weightToCalculate,
+				20,
+				pWeights2,
+				true,
+				{
+					percent: percentToCalculate,
+					reps:    1,
+					units:   'KG'
+				}
+			);
+		}
+		
+		var testPlateConfiguration1 = [
+			new PlateConfiguration(20, 1)
+		];
+		var set1 = simpleSetFactory(62, 100);
+		equal(60, set1.displayWeight);
+		deepEqual(set1.plateConfiguration, testPlateConfiguration1, '140lb no small plates');
+		
+		var testPlateConfiguration2 = [
+			new PlateConfiguration(20, 1)
+		];
+		var set2 = simpleSetFactory(65, 100);
+		equal(60, set1.displayWeight);
+		deepEqual(set2.plateConfiguration, testPlateConfiguration2, '145 no small plates');
+		
+	});
+	
+	
 	test('Plate Optimizer', function(){
 		var po = new PlateOptimizer();
 		
