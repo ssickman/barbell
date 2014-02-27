@@ -1,15 +1,19 @@
 (function() {  if (!window.console) {    window.console = {};  }  var m = [    "log", "info", "warn", "error", "debug", "trace", "dir", "group",    "groupCollapsed", "groupEnd", "time", "timeEnd", "profile", "profileEnd",    "dirxml", "assert", "count", "markTimeline", "timeStamp", "clear"  ];  for (var i = 0; i < m.length; i++) {    if (!window.console[m[i]]) {      window.console[m[i]] = function() {};    }      } })();
 
 var $ = jQuery.noConflict();
-var BarbellView = function()
+var BarbellView = function(storageEnvironment)
 {
 	var self = this;
+
+	if (typeof(storageEnvironment) == 'undefined') {
+		storageEnvironment = 'production'
+	}
 	
 	self.units = ko.observableArray([
         'LB', 'KG'
     ]);
 	
-	self.storageHandler = new StorageHandler('production');
+	self.storageHandler = new StorageHandler(storageEnvironment);
 	
 	self.weightUnit = ko.observable(self.storageHandler.getWithDefault('weightUnit', 'LB'));
 	
@@ -45,7 +49,7 @@ var BarbellView = function()
 		if (newValue.length == 0 && currentPlatesAvailable.length == 1) {
 			self.plateWeightsAvailable(currentPlatesAvailable);
 		
-			alert('Whatcha gonna lift, bro?');
+			//alert('Whatcha gonna lift, bro?'); //comment out for now, use non alert later
 		} else {
 			self.storageHandler.set('plateWeightsAvailable' + self.weightUnit(), newValue, true);
 		}

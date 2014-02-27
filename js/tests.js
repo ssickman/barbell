@@ -233,16 +233,19 @@ module('Storage Handler');
 	
 module('BarbellView');
 	test('Initialization', function(){
-		//expect(0);
+		unbindKo();
 		
 		var defaultUnit = 'LB';
 		
-		var bv = new BarbellView();
+		var bv = new BarbellView('test');
 		ko.applyBindings(bv);
 		
 		ok(bv instanceof BarbellView, 'correct type');
 		
-		deepEqual(bv.weightUnit(), defaultUnit, 'default unit: LB');
+		
+		equal(bv.weightUnit(), defaultUnit, 'default unit: LB');
+		
+		equal(bv.barbellWeightDisplay(100), '100 LB');
 		
 		ok(bv.storageHandler instanceof StorageHandler, 'correct type');
 		
@@ -253,7 +256,50 @@ module('BarbellView');
 		deepEqual(bv.plateWeights(), bv.plateWeightsAvailable() , 'weights available equals BarbellView copy of default');
 
 		ok(bv.showGhostLabel(), 'weight label on by default');
+		
+		
+		defaultUnit = 'KG';
+		bv.weightUnit(defaultUnit);
+		
+		equal(bv.weightUnit(), defaultUnit, 'changed to metric');
+		deepEqual(bv.barbellWeights(), barbellWeights[defaultUnit], 'barbell weights loaded');
+	
+		equal(bv.barbellWeightDisplay(100), '100 KG');
+		
+		deepEqual(bv.plateWeights(), plateWeights[defaultUnit], 'plate weights loaded');
+		deepEqual(bv.plateWeightsAvailable(), plateWeights[defaultUnit], 'weights available equals all weights for given units');
+		deepEqual(bv.plateWeights(), bv.plateWeightsAvailable() , 'weights available equals BarbellView copy of default');
+		
+		
 	});	
+	
+	test('Select available plates', function(){
+		unbindKo();
+		
+		var bv = new BarbellView('test');
+		ko.applyBindings(bv);
+		bv.weightUnit('LB');
+		
+		var plateWeightsTest = plateWeights.LB.slice(0);
+		bv.plateWeightsAvailable(plateWeightsTest.slice(2));
+		
+		notDeepEqual(plateWeightsTest, bv.plateWeightsAvailable(), 'bv copy no longer equal to default available plates');
+		
+		bv.plateWeightsAvailable(plateWeights.LB.slice(0, 1));
+		equal(bv.plateWeightsAvailable().length, 1, 'number of plates set correctly');
+		
+		bv.plateWeightsAvailable([]);
+		
+		notEqual(bv.plateWeightsAvailable().length, 0, 'prevent no plates available');
+
+	});
+	
+	test('Hit non test branch of BarbellView', function(){
+		expect(0);
+		unbindKo();
+		var bv = new BarbellView();
+		unbindKo();
+	});
 
 
 
@@ -276,3 +322,7 @@ function clearTestItems()
 		}
 	}
 }	
+
+function unbindKo(){
+	ko.cleanNode(document);
+}
