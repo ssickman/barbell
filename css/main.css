@@ -130,6 +130,10 @@ body {
    /*  text-shadow: 1px 1px 0 #AAAAAA; */
 }
 
+.title-medium, .title-short{
+	display: none;
+}
+
 div.main.wrapper{
 	position: relative;
 }
@@ -206,7 +210,7 @@ nav a:hover {
    ============== */
 
 .main {
-    padding: 30px 0;
+    padding: 10px 0 20px;
 }
 
 .main article h1 {
@@ -483,7 +487,7 @@ ul.sets{
 	width: 100%;
 }
 
-h3.weight, ul.sets, .plate, .wrapper, .weight-reps, .title, footer.wrapper h3 {
+h3.weight, ul.sets, .plate, .wrapper, .weight-reps, .title, footer.wrapper h3, #weight-to-calculate, .weight-to-calculate-wrap label.weight {
 	transition: all .5s ease-out;
 }
 
@@ -493,6 +497,10 @@ h3.weight, ul.sets, .plate, .wrapper, .weight-reps, .title, footer.wrapper h3 {
 
 .plate-weights-wrap label, .single-checkbox label{
 	float: left;
+}
+
+.single-checkbox-label{
+	cursor: pointer;
 }
 
 
@@ -663,6 +671,9 @@ label.single-checkbox-label {
    ========================================================================== */
 
 @media only screen and (max-width:480px) {
+	
+	
+	
 	.weight-configuration >  li:nth-child(n+2){
 		font-size: 12px;
 	   
@@ -723,6 +734,16 @@ label.single-checkbox-label {
 
 }
 
+@media only screen and (orientation:landscape) and (max-width:1136px) {
+	.title{
+/* 		display: none; */
+	}
+	body, .title, h3{
+		font-size: 70% !important;
+	}
+}
+
+
 @media only screen and (min-width: 480px) {
 	.weight-to-calculate-wrap input{
 		/* width: 250px; */
@@ -747,7 +768,8 @@ label.single-checkbox-label {
 
 @media only screen and (max-width:480px) {
 	.settings-box .label{
-		width:120px;
+		width:100px;
+		font-size: 14px;
 	}
 	
 	.plate-weights-wrap label:nth-child(4) {
@@ -758,8 +780,73 @@ label.single-checkbox-label {
 	input[type="radio"] + span {
 	    width: 39px;
 	}
+	
+	.title{
+		font-size: 20px;
+		
+	}
+	
+	nav a{
+		margin-top: 17px;
+	}
+	
+	form.weight-to-calculate-wrap {
+		margin-left: 0;
+	}
+	
+	#weight-to-calculate {
+		display: block;
+	    margin: 0 auto;
+	    width: 82%;
+	}
 }
 
+@media only screen and (max-width:350px) {
+	.title-default{
+		display: none;
+	} .title-medium{
+		display: inline;
+	}
+}
+
+@media only screen and (max-width:300px) {
+	div.settings-box{
+		min-width: 0;
+		padding: 20px 5px;
+		top: -350px;
+	}
+	
+	div.settings-box label.label{
+		float: none;
+		display: block;
+		text-align: left;
+		width: 100%;
+		margin-right: 0;
+	}
+	
+	div.settings-box label.label.single-checkbox-label{
+		margin-left: 30px;
+		width: 130px !important;
+		line-height: 15px;
+		font-size: 12px;
+	}
+	
+	div.single-checkbox {
+		margin-top: 10px;
+		padding-top: 13px;
+	}
+}
+
+
+@media only screen and (max-width:200px) {
+	.title-short{
+		display: inline;
+	}
+	
+	.title-medium{
+		display: none;
+	}
+}
 
 @media only screen and (min-width: 480px) {
 
