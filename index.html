@@ -104,7 +104,7 @@
 				</form>			
              	
               	        
-              	<ul class="weight-configuration" data-bind="foreach: { data: weightConfigs, afterAdd: slideDownConfig }">
+              	<ul class="weight-configuration" data-bind="foreach: { data: setEntries, afterAdd: slideDownConfig }">
               		<li class="box">
               			<h3 class="weight"> 
               				Working Weight: <span data-bind="text: weight"></span><span data-bind="text: unit"  class="units"></span>
@@ -129,7 +129,7 @@
               		</li>
               	</ul>
               	
-              	<button id="load-more-configs"  class="button1" data-bind="click: showMoreConfigurations, visible: displayConfigurationsNumber < allWeightConfigs.length">Load More</button>        
+              	<button id="load-more-configs"  class="button1" data-bind="click: showMoreConfigurations, visible: displayConfigurationsNumber < allSetEntries.length">Load More</button>        
               	              	
             </div> <!-- #main -->
         </div> <!-- #main-container -->

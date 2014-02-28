@@ -83,7 +83,7 @@ module('Class Functionality');
 	});
 	
 	
-	test('Set Factory Calculation Basics', function(){	
+	test('Set Factory Calculation Ignore Small Plates', function(){	
 		var simpleSetFactory = function(weightToCalculate, percentToCalculate) {
 			var pWeights = plateWeights.LB.slice(0)
 			return  new SetFactory(
@@ -113,6 +113,74 @@ module('Class Functionality');
 		equal(135, set1.displayWeight);
 		deepEqual(set2.plateConfiguration, testPlateConfiguration2, '145 no small plates');
 		
+	});
+	
+	test('Set Factory Calculation Include Small Plates', function(){	
+		var simpleSetFactory = function(weightToCalculate, percentToCalculate) {
+			var pWeights = plateWeights.LB.slice(0)
+			return  new SetFactory(
+				weightToCalculate,
+				barbellWeight,
+				pWeights,
+				false,
+				{
+					percent: percentToCalculate,
+					reps:    1,
+					units:   'LB'
+				}
+			);
+		}
+		
+		var testPlateConfiguration1 = [
+			new PlateConfiguration(45 , 1),
+			new PlateConfiguration(2.5, 1)
+		];
+		var set1 = simpleSetFactory(140, 100);
+		equal(140, set1.displayWeight);
+		deepEqual(set1.plateConfiguration, testPlateConfiguration1, '140lb with small plates');
+		
+		var testPlateConfiguration2 = [
+			new PlateConfiguration(45, 1),
+			new PlateConfiguration(5,  1)
+		];
+		var set2 = simpleSetFactory(145, 100);
+		equal(145, set2.displayWeight);
+		deepEqual(set2.plateConfiguration, testPlateConfiguration2, '145 small plates');
+		
+		var testPlateConfiguration3 = [
+			new PlateConfiguration(45 , 1),
+			new PlateConfiguration(5  , 1),
+			new PlateConfiguration(2.5, 1)
+		];
+		var set3 = simpleSetFactory(150, 100);
+		equal(150, set3.displayWeight);
+		deepEqual(set3.plateConfiguration, testPlateConfiguration3, '150 small plates');
+		
+	});
+	
+	test('Set Factory Calculation Unavailable Plates', function(){	
+		var simpleSetFactory = function(weightToCalculate, percentToCalculate) {
+			var pWeights = [5,10,25,35,45];
+			return  new SetFactory(
+				weightToCalculate,
+				barbellWeight,
+				pWeights,
+				true,
+				{
+					percent: percentToCalculate,
+					reps:    1,
+					units:   'LB'
+				}
+			);
+		}
+		
+		var testPlateConfiguration1 = [
+			new PlateConfiguration(45, 1),
+			new PlateConfiguration(10, 1)
+		];
+		var set1 = simpleSetFactory(155, 100);
+		deepEqual(set1.plateConfiguration, testPlateConfiguration1, '155lb only remove small plates even when one is not available');
+				
 	});
 	
 	test('Set Factory Calculation Basics KG', function(){	
@@ -183,12 +251,84 @@ module('Class Functionality');
 		
 	});
 	
-	
 	test('Plate Optimizer', function(){
 		var po = new PlateOptimizer();
 		
 		throws(function() { po.optimize(''); }, 'Error("PlateOptimizer.optimize accepts only Set() objects")');
 	});
+	
+module('Set Scheme');
+	test('Set Scheme set weights match expected: ignore small plates', function(){
+		var sc = new SetScheme({
+			units:                 'LB',
+			barbellWeight:         45,
+			weightToCalculate:     315,
+			plateWeightsAvailable: plateWeights.LB,
+			ignoreSmallPlates:     true,
+			warmupScheme:          warmupScheme.slice(0)
+		});
+		
+		var expectedWeights = [
+			{percent: 40 , weight: 115},
+			{percent: 67 , weight: 205},
+			{percent: 80 , weight: 245},
+			{percent: 90 , weight: 275},
+			{percent: 100, weight: 315},
+		]
+		
+		var sets = sc.calculateSets();
+		
+		for (var i = 0; i < sets.length; i++) {
+		
+			equal(expectedWeights[i].percent, sets[i].percent, 'percent ok');
+			equal(expectedWeights[i].weight , sets[i].displayWeight, 'weight ok');
+		}
+
+	});
+	
+	test('Set Scheme set weights match expected: include small plates', function(){
+		var sc = new SetScheme({
+			units:                 'LB',
+			barbellWeight:         45,
+			weightToCalculate:     315,
+			plateWeightsAvailable: plateWeights.LB,
+			ignoreSmallPlates:     false,
+			warmupScheme:          warmupScheme.slice(0)
+		});
+		
+		var expectedWeights = [
+			{percent: 40 , weight: 125},
+			{percent: 67 , weight: 210},
+			{percent: 80 , weight: 250},
+			{percent: 90 , weight: 280},
+			{percent: 100, weight: 315},
+		]
+		
+		var sets = sc.calculateSets();
+		
+		for (var i = 0; i < sets.length; i++) {
+		
+			equal(expectedWeights[i].percent, sets[i].percent, 'percent ok');
+			equal(expectedWeights[i].weight , sets[i].displayWeight, 'weight ok');
+		}
+
+	});
+	
+	test('Set Scheme missing required key', function(){
+		throws(
+			function() { 
+				new SetScheme({
+					units:                 'LB',
+					barbellWeight:         45,
+					weightToCalculate:     315,
+					plateWeightsAvailable: plateWeights.LB,
+					ignoreSmallPlates:     true,
+				});
+			},
+			'Error(\'required key \' + requiredKeys[i] + \' is missing\');'	
+		);
+	});
+
 	
 module('Storage Handler');	
 	test('Storage Handler', function(){

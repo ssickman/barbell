@@ -8,6 +8,55 @@ function Set(displayWeight, plateConfiguration) {
 	this.plateConfiguration = plateConfiguration;
 }
 
+function SetScheme(data) {
+	var requiredKeys = [
+		'units',
+		'barbellWeight',
+		'weightToCalculate',
+		'plateWeightsAvailable',
+		'ignoreSmallPlates',
+		'warmupScheme',
+	];
+	
+	for (var i = 0; i < requiredKeys.length; i++) {
+		if (typeof(data[requiredKeys[i]]) == 'undefined') {
+			throw new Error('required key ' + requiredKeys[i] + ' is missing');
+		}
+		
+		this[requiredKeys[i]] = data[requiredKeys[i]];
+	}
+	
+	this.warmupScheme.push({ percent:100, reps: 0 });
+	
+	//determine how much padding we need to position sets at bottom of div
+	this.maxPlates = 0;
+	
+	this.calculateSets = function() {
+		var sets = [];
+		
+		for (var i = 0; i < this.warmupScheme.length; i++) { 
+			var set = new SetFactory(
+				parseInt(this.weightToCalculate * this.warmupScheme[i].percent / 100),
+				this.barbellWeight,
+				this.plateWeightsAvailable.slice(0),
+				this.ignoreSmallPlates && this.warmupScheme[i].percent != 100,
+				{
+					percent: this.warmupScheme[i].percent,
+					reps:    this.warmupScheme[i].reps,
+					units:   this.units
+				}
+			);
+			
+			//set = po.optimize(set);
+			
+			sets.push(set);
+			
+			this.maxPlates = set.plateConfiguration.length > this.maxPlates ? set.plateConfiguration.length : this.maxPlates;	
+		}
+		
+		return sets;
+	}
+}
 
 function SetFactory(weightToCalculate, barbellWeight, platesToUsePassed, ignoreSmallPlates, setDisplayData) {
 	
@@ -16,8 +65,7 @@ function SetFactory(weightToCalculate, barbellWeight, platesToUsePassed, ignoreS
 	
 	//get rid of the 2 smallest plates during warmups
 	if (ignoreSmallPlates) {
-		platesToUse.shift(); 
-		platesToUse.shift()
+		platesToUse = this.removeSmallPlates(platesToUse.slice(0), setDisplayData['units']);
 	}
 	
 	//make a copy to store on the set
@@ -36,6 +84,27 @@ function SetFactory(weightToCalculate, barbellWeight, platesToUsePassed, ignoreS
 	}
 	
 	return set;
+}
+SetFactory.prototype.removeSmallPlates = function(platesToUse, units) {
+	var smallPlates = [];
+	smallPlates.push(
+		platesToUse.shift(), 
+		platesToUse.shift()
+	);
+	
+	if (units == 'LB') {
+		plateThreshold = 5;
+	} else {
+		plateThreshold = 2.5;
+	}
+	
+	for (var i = 0; i < smallPlates.length; i++) {
+		if (smallPlates[i] > plateThreshold) {
+			platesToUse.unshift(smallPlates[i]);
+		}
+	}
+	
+	return platesToUse;
 }
 
 SetFactory.prototype.calculateSet = function(weightToCalculate, barbellWeight, platesToUse) {

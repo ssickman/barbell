@@ -88,11 +88,11 @@ var BarbellView = function(storageEnvironment)
 	self.displayConfigurationsNumber = 3;
 	self.showMoreConfigurations = function() {
 		self.displayConfigurationsNumber = 10;
-		self.weightConfigs(self.allWeightConfigs.slice(0, self.displayConfigurationsNumber));
+		self.setEntries(self.allSetEntries.slice(0, self.displayConfigurationsNumber));
 	}
 	
-	self.allWeightConfigs = self.storageHandler.getWithDefault('weightConfigs', [], true);
-	self.weightConfigs      = ko.observableArray(self.allWeightConfigs.slice(0, self.displayConfigurationsNumber));
+	self.allSetEntries = self.storageHandler.getWithDefault('setEntries', [], true);
+	self.setEntries      = ko.observableArray(self.allSetEntries.slice(0, self.displayConfigurationsNumber));
 	
 	
 	//for fractional plates
@@ -129,50 +129,29 @@ var BarbellView = function(storageEnvironment)
 			self.toggleSettings();
 		}
 		
-		var sets = [];
-		
-		thisWarmupScheme = warmupScheme.slice(0);
-		thisWarmupScheme.push({ percent:100, reps: 0 });
-		
-		//determine how much padding we need to position sets at bottom of div
-		var maxPlates = 0;
-		
-		var po = new PlateOptimizer();
-		
-		for (var i = 0; i < thisWarmupScheme.length; i++) { 
-			var set = new SetFactory(
-				parseInt(self.weightToCalculate() * thisWarmupScheme[i].percent / 100),
-				self.barbellWeight(),
-				self.plateWeightsAvailable().slice(0),
-				self.ignoreSmallPlates() && i != thisWarmupScheme.length - 1,
-				{
-					percent: thisWarmupScheme[i].percent,
-					reps:    thisWarmupScheme[i].reps,
-					units:   self.weightUnit()
-				}
-			);
-			
-			set = po.optimize(set);
-			
-			sets.push(set);
-			
-			maxPlates = set.plateConfiguration.length > maxPlates ? set.plateConfiguration.length : maxPlates;
-			
-		}
+		var sc = new SetScheme({
+			units:                 self.weightUnit(),
+			barbellWeight:         self.barbellWeight(),
+			weightToCalculate:     self.weightToCalculate(),
+			plateWeightsAvailable: self.plateWeightsAvailable().slice(0),
+			ignoreSmallPlates:     self.ignoreSmallPlates(),
+			warmupScheme:          warmupScheme.slice(0)
+		});
+		var sets = sc.calculateSets();
 		
 		//keep all plate configs (up to max amount constant)
-		self.allWeightConfigs.unshift({
+		self.allSetEntries.unshift({
 			unit:         self.weightUnit(),
 			weight:       self.weightToCalculate(),
-			platePadding: maxPlates,
+			platePadding: sc.maxPlates,
 			sets:         sets
 		});
-		self.allWeightConfigs.slice(0, 20);
+		self.allSetEntries.slice(0, 20);
 		//but only display so many
-		self.weightConfigs(self.allWeightConfigs.slice(0, self.displayConfigurationsNumber));
+		self.setEntries(self.allSetEntries.slice(0, self.displayConfigurationsNumber));
 		
 		
-		self.storageHandler.set('weightConfigs', self.allWeightConfigs, true);
+		self.storageHandler.set('setEntries', self.allSetEntries, true);
 	};
 	
 	
