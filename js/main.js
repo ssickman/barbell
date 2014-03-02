@@ -1,6 +1,7 @@
 (function() {  if (!window.console) {    window.console = {};  }  var m = [    "log", "info", "warn", "error", "debug", "trace", "dir", "group",    "groupCollapsed", "groupEnd", "time", "timeEnd", "profile", "profileEnd",    "dirxml", "assert", "count", "markTimeline", "timeStamp", "clear"  ];  for (var i = 0; i < m.length; i++) {    if (!window.console[m[i]]) {      window.console[m[i]] = function() {};    }      } })();
 
 var $ = jQuery.noConflict();
+
 var BarbellView = function(storageEnvironment)
 {
 	var self = this;
@@ -8,7 +9,7 @@ var BarbellView = function(storageEnvironment)
 	if (typeof(storageEnvironment) == 'undefined') {
 		storageEnvironment = 'production'
 	}
-	
+
 	self.units = ko.observableArray([
         'LB', 'KG'
     ]);
@@ -118,6 +119,19 @@ var BarbellView = function(storageEnvironment)
 		self.storageHandler.set('ignoreSmallPlates', newValue);
 	});
 	
+	self.warmupScheme = ko.observableArray(self.storageHandler.getWithDefault('warmupScheme', warmupScheme, true));
+	
+	self.addWarmupSet = function() {
+		self.warmupScheme.push({
+			percent: null,
+			reps:    null
+		});
+	}
+	
+	self.removeWarmupSet = function() {
+		self.warmupScheme.pop();
+	}
+	
 	
 	self.calculateSets = function() {
 		
@@ -135,7 +149,7 @@ var BarbellView = function(storageEnvironment)
 			weightToCalculate:     self.weightToCalculate(),
 			plateWeightsAvailable: self.plateWeightsAvailable().slice(0),
 			ignoreSmallPlates:     self.ignoreSmallPlates(),
-			warmupScheme:          warmupScheme.slice(0)
+			warmupScheme:          self.warmupScheme().slice(0)
 		});
 		var sets = sc.calculateSets();
 		
@@ -164,10 +178,25 @@ var BarbellView = function(storageEnvironment)
 	}
 	
 	self.settingsVisible = ko.observable(false);
+	self.settingsVisible.subscribe(function(newValue) {	
+		if (!newValue) {
+		console.log('saving');
+			self.filterAndSaveWarmupScheme();
+		}
+		
+	});
+	
+	self.filterAndSaveWarmupScheme = function(){
+		self.warmupScheme(ko.utils.arrayFilter(self.warmupScheme(), function(warmup) {
+			return warmup.reps > 0 && warmup.percent > 10;
+		}));
+		
+		console.log(self.warmupScheme());
+		
+		self.storageHandler.set('warmupScheme', self.warmupScheme(), true);
+	}
+	
 	self.toggleSettings = function(e) {
 		self.settingsVisible(!self.settingsVisible());
 	}
-	
-	
-	
 }

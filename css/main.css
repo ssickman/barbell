@@ -11,13 +11,17 @@ textarea {
 
 }
 
+input{
+	border:1px solid #ccc;
+}
+
 body {
     font-size: 1em;
     line-height: 1.4;
     
 }
 
-body, button, input{
+body, button, input, div{
 	font-family: 'Ruda', sans-serif;
 }
 
@@ -174,10 +178,10 @@ div.settings-box{
 	width:480px;
 	min-width: 315px;
 	position: absolute;
-	top: -300px;
+	top: -430px;
 	right: 0;
 	transition:all .2s ease-out;
-	padding: 20px 20px 50px;
+	padding: 20px 20px 20px;
 	z-index: 10;
 } div.settings-box.toggled{
 	top: -0px;
@@ -187,9 +191,9 @@ div.available-plates{
 	overflow: hidden;
 }
 
-div.single-checkbox{
+div.settings-divider{
 	border-top: 2px solid #F0F0F0;
-    margin-top: 30px;
+    margin-top: 20px;
     padding-top: 20px;
 }
 
@@ -291,14 +295,13 @@ div.weight-to-calculate{
 	margin: 0;
 	list-style: none;
 } .weight-configuration >  li{
-	/* padding: 0 10px; */
+
 } .weight-configuration h3.weight{
 	font-weight: normal;
 	font-size: 16px;
 	margin: 0;
 	padding: 5px 8px;
 	color: #F9F9F9;
-	/* border-bottom: 2px solid #555555; */
 } 
 
 
@@ -310,18 +313,11 @@ ul.sets{
 
 } ul.sets > li {
 	float: left;
-	/* padding: 5px; */
-	/* border-right: 1px solid #ccc; */
-	width: 130px;
-	width: 200px;
-	/* height: 6em; */
-	
-	
+	width: 100%;	
 } ul.sets > li:last-child {
 	border-right: none;
 } ul.sets > li:last-child div.weight-reps{
 	font-weight: 900;
-	/* color: #fff; */
 }
 
 .additional-weight{
@@ -335,16 +331,6 @@ ul.sets{
     padding: 4px 5px 0;
     text-align: center;
 }
-
-.plate-breakdown > div {
-	
-	
-} .plate-breakdown > div:nth-child(odd){
-/* 	background: #ccc; */
-} .plate-breakdown > div:nth-child(even){
-/* 	background: #ddd; */
-}
-
 
 .plate{
 	background: none repeat scroll 0 0 #EEEEEE;
@@ -459,6 +445,23 @@ ul.sets{
 	top:1px;
 }
 
+.button1.small-button{
+	/*
+height: 30px;
+	line-height: 22px;
+    margin-bottom: 5px;
+    position: relative;
+    top: -1px;
+    width: 100%;
+*/
+    transition: all .2s ease-out;
+}
+
+.hideSmallButton{
+	opacity: 0;
+	visibility: hidden;
+}
+
 
 
 .footer-container footer h3{
@@ -487,7 +490,7 @@ ul.sets{
 	width: 100%;
 }
 
-h3.weight, ul.sets, .plate, .wrapper, .weight-reps, .title, footer.wrapper h3, #weight-to-calculate, .weight-to-calculate-wrap label.weight {
+h3.weight, ul.sets, .plate, .wrapper, .weight-reps, .title, footer.wrapper h3, #weight-to-calculate, .weight-to-calculate-wrap label.weight, .warmup-set-wrap input {
 	transition: all .5s ease-out;
 }
 
@@ -502,6 +505,54 @@ h3.weight, ul.sets, .plate, .wrapper, .weight-reps, .title, footer.wrapper h3, #
 .single-checkbox-label{
 	cursor: pointer;
 }
+
+div.warmup-scheme-wrap{
+	padding-top:20px;
+}
+
+.warmup-scheme-wrap .warmup-scheme-label{
+	float: none;
+	margin-left: 0;
+	margin-bottom: 5px;
+	display: block;
+}
+
+.warmup-input-wrap{
+	overflow: visible;
+	/* display:-webkit-flex; */
+	/* display: flex; */
+	width: 98%;
+}
+
+.warmup-input-wrap .warmup-set-wrap{
+	width: 33px;
+	margin-right: 10px;
+	float: left;
+} .warmup-input-wrap .warmup-set-wrap > input:first-child{
+	margin-bottom: 4px;
+}
+
+.warmup-input-wrap .warmup-set-labels{
+	width:38px;
+} .warmup-input-wrap .warmup-set-labels > div{
+	text-align: right;
+	float: none;
+    margin: 0;
+    margin-right: 4px;
+    width: auto;
+    position: relative;
+    top: 1px;
+} .warmup-input-wrap .warmup-set-labels > div:last-child{
+	top: 4px;
+} 
+
+.warmup-input-wrap input{
+	width:100%;
+	height: auto;
+	line-height: 22px; 
+	padding: 1px;
+}
+
 
 
 /* ==========================================================================
@@ -730,7 +781,49 @@ label.single-checkbox-label {
 	form.weight-to-calculate-wrap{
 		margin-left: 10px;
 	}
-
+	
+	
+	.warmup-input-wrap .warmup-set-wrap{
+		width: 20px;
+	} .warmup-input-wrap input {
+		font-size: 14px;
+	} .warmup-input-wrap .warmup-set-labels {
+		width: 34px;
+		margin-right: 3px;
+	}
+		
+	.settings-box .label{
+		width:100px;
+		font-size: 14px;
+	}
+	
+	.plate-weights-wrap label:nth-child(4) {
+		clear: both;
+		
+	}
+	
+	input[type="radio"] + span {
+	    width: 39px;
+	}
+	
+	.title{
+		font-size: 20px;
+		
+	}
+	
+	nav a{
+		margin-top: 17px;
+	}
+	
+	form.weight-to-calculate-wrap {
+		margin-left: 0;
+	}
+	
+	#weight-to-calculate {
+		display: block;
+	    margin: 0 auto;
+	    width: 82%;
+	}
 
 }
 
@@ -768,41 +861,6 @@ label.single-checkbox-label {
 
 }
 
-@media only screen and (max-width:480px) {
-	.settings-box .label{
-		width:100px;
-		font-size: 14px;
-	}
-	
-	.plate-weights-wrap label:nth-child(4) {
-		clear: both;
-		
-	}
-	
-	input[type="radio"] + span {
-	    width: 39px;
-	}
-	
-	.title{
-		font-size: 20px;
-		
-	}
-	
-	nav a{
-		margin-top: 17px;
-	}
-	
-	form.weight-to-calculate-wrap {
-		margin-left: 0;
-	}
-	
-	#weight-to-calculate {
-		display: block;
-	    margin: 0 auto;
-	    width: 82%;
-	}
-}
-
 @media only screen and (max-width:350px) {
 	.title-default{
 		display: none;
@@ -815,7 +873,7 @@ label.single-checkbox-label {
 	div.settings-box{
 		min-width: 0;
 		padding: 20px 5px;
-		top: -350px;
+		top: -425px;
 	}
 	
 	div.settings-box label.label{
@@ -833,12 +891,47 @@ label.single-checkbox-label {
 		font-size: 12px;
 	}
 	
-	div.single-checkbox {
+	div.settings-divider{
 		margin-top: 10px;
 		padding-top: 13px;
 	}
+	
+	div.settings-box label.label.single-checkbox-label.warmup-scheme-label{
+		margin-left: 0px;
+		font-size: 14px;
+	}
+	
+	.warmup-input-wrap .warmup-set-wrap{
+		width: 20px;
+	} .warmup-input-wrap input {
+		font-size: 14px;
+	} .warmup-input-wrap .warmup-set-labels {
+		width: 34px;
+		margin-right: 3px;
+	}
+	
+	.weight-configuration {
+	    font-size: 12px;
+	}
 }
 
+@media only screen and (max-width:240px) {
+	.warmup-input-wrap .warmup-set-wrap{
+		width: 16px;
+		margin-right: 6px;
+	} .warmup-input-wrap input {
+		font-size: 12px;
+	} .warmup-input-wrap .warmup-set-labels {
+		width: 26px;
+		margin-right: 3px;
+	}
+	
+	.warmup-set-labels div{
+		font-size: 12px !important;		
+		margin-right: 1px !important;
+	}
+
+}
 
 @media only screen and (max-width:200px) {
 	.title-short{
@@ -847,6 +940,10 @@ label.single-checkbox-label {
 	
 	.title-medium{
 		display: none;
+	}
+	
+	div.settings-box{
+		top:-500px;
 	}
 }
 

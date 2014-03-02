@@ -15,5 +15,4 @@ var warmupScheme = [
 	{ reps: 1, percent: 90}
 ];
 
-
 //start = 3; end = start + 1; warmupScheme = warmupScheme.slice(start, end);

@@ -88,7 +88,28 @@
 	
 					</div>
 					
-					<div class="single-checkbox config-wrap">
+					<div class="warmup-scheme-wrap config-wrap settings-divider">
+						<label for="barbell-weight" class="label single-checkbox-label warmup-scheme-label">Warmup Scheme</label>
+						<div class="warmup-input-wrap">
+							<div class="warmup-set-wrap warmup-set-labels">
+								<div class="percent-label label">%</div>
+								<div class="reps-label  label">reps</div>
+							</div>
+							<!-- ko foreach: warmupScheme -->
+								<div class="warmup-set-wrap">
+									<input class="warmup-scheme-input warmup-percent" pattern="[0-9]*" name="warmupScheme[percent][]" data-bind="value: percent">
+									<input class="warmup-scheme-input warmup-reps"    pattern="[0-9]*" name="warmupScheme[reps][]" data-bind="value: reps">
+								</div>
+							<!-- /ko -->
+							<div class="warmup-set-wrap">
+								<input type="button" value="+" class="button1 small-button" data-bind="click: addWarmupSet   , css: { hideSmallButton: warmupScheme().length > 4 }">
+								<input type="button" value="&ndash;" class="button1 small-button" data-bind="click: removeWarmupSet, css: { hideSmallButton: warmupScheme().length < 2 }">
+							</div>
+						</div>
+						
+					</div>
+					
+					<div class="single-checkbox config-wrap settings-divider">
 						<label class="single-checkbox ignore-small-plates">
 							<input type="checkbox" id="ignore-small-plates" class="single-checkbox ignore-small-plates" data-bind="checked: ignoreSmallPlates">
 							<span><span>&nbsp;</span></span>
