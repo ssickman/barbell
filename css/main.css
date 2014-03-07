@@ -490,7 +490,8 @@ height: 30px;
 	width: 100%;
 }
 
-h3.weight, ul.sets, .plate, .wrapper, .weight-reps, .title, footer.wrapper h3, #weight-to-calculate, .weight-to-calculate-wrap label.weight, .warmup-set-wrap input {
+h3.weight, ul.sets, .plate, .wrapper, .weight-reps, .title, footer.wrapper h3, 
+#weight-to-calculate, .weight-to-calculate-wrap label.weight, .warmup-set-wrap input, .settings-divider {
 	transition: all .5s ease-out;
 }
 
@@ -504,10 +505,6 @@ h3.weight, ul.sets, .plate, .wrapper, .weight-reps, .title, footer.wrapper h3, #
 
 .single-checkbox-label{
 	cursor: pointer;
-}
-
-div.warmup-scheme-wrap{
-	padding-top:20px;
 }
 
 .warmup-scheme-wrap .warmup-scheme-label{
@@ -794,7 +791,7 @@ label.single-checkbox-label {
 		
 	.settings-box .label{
 		width:100px;
-		font-size: 14px;
+		font-size: 13px;
 	}
 	
 	.plate-weights-wrap label:nth-child(4) {
@@ -824,6 +821,13 @@ label.single-checkbox-label {
 	    margin: 0 auto;
 	    width: 82%;
 	}
+	
+	div.settings-divider{
+		margin-top: 14px;
+		padding-top: 7px;
+	}
+	
+
 
 }
 
@@ -843,10 +847,6 @@ label.single-checkbox-label {
 	.weight-to-calculate-wrap input{
 		/* width: 250px; */
 	}
-	
-	
-	
-	
 	
 	.weight-to-calculate-wrap input.button1 {
 		width: 75px;

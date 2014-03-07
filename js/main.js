@@ -119,6 +119,11 @@ var BarbellView = function(storageEnvironment)
 		self.storageHandler.set('ignoreSmallPlates', newValue);
 	});
 	
+	self.preferFewerPlates = ko.observable(self.storageHandler.getWithDefault('preferFewerPlates', true) != 'false');
+	self.preferFewerPlates.subscribe(function(newValue){
+		self.storageHandler.set('preferFewerPlates', newValue);
+	});
+	
 	self.warmupScheme = ko.observableArray(self.storageHandler.getWithDefault('warmupScheme', warmupScheme, true));
 	
 	self.addWarmupSet = function() {
@@ -149,7 +154,8 @@ var BarbellView = function(storageEnvironment)
 			weightToCalculate:     self.weightToCalculate(),
 			plateWeightsAvailable: self.plateWeightsAvailable().slice(0),
 			ignoreSmallPlates:     self.ignoreSmallPlates(),
-			warmupScheme:          self.warmupScheme().slice(0)
+			warmupScheme:          self.warmupScheme().slice(0),
+			optimize:              self.preferFewerPlates()
 		});
 		var sets = sc.calculateSets();
 		

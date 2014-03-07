@@ -196,7 +196,7 @@ function PlateOptimizer()
 			
 			
 			var minThreshold = .9;
-			var maxThreshold = 1 + ((100 - set.percent) / 4 / 100);
+			var maxThreshold = 1 + ((100 - set.percent) / 2.5 / 100);
 			
 			var maxConcreteShortage = set.units == 'LB' ? 15 : 8;
 			var maxConcreteOverage  = set.units == 'LB' ? 20 : 10; 
@@ -208,12 +208,13 @@ function PlateOptimizer()
 			console.log('max threshold ' + maxThreshold);
 			
 			//the smallest difference between the targetSet weight and the bestCandidate (so far)
-			minWeightDifference = targetSet.displayWeight - bestCandidateSet.displayWeight;
+			var minWeightDifference = targetSet.displayWeight - bestCandidateSet.displayWeight;
+			var minWeightToAdd  = set.units == 'LB' ? 5 : 2; 
 			
 			//start at bottom of threshold, lighter could use fewer (e.g., knock off the 2.5lb plates)
-			var candidateWeight = parseInt(set.displayWeight * minThreshold); 
-			var thresholdWeight = parseInt(set.displayWeight * maxThreshold);
-			var minWeightToAdd  = set.units == 'LB' ? 5 : 2; 
+			var candidateWeight = minWeightToAdd * Math.round(parseInt(set.displayWeight * minThreshold) / minWeightToAdd); 
+			var thresholdWeight = minWeightToAdd * Math.round(parseInt(set.displayWeight * maxThreshold) / minWeightToAdd);
+			
 			
 			if (candidateWeight < set.displayWeight - maxConcreteShortage) {
 				candidateWeight = set.displayWeight - maxConcreteShortage;
@@ -240,10 +241,15 @@ function PlateOptimizer()
 						units:   set.units
 					}
 				);
+				
+				console.log('candidate: ' + candidateWeight);
+				
 				candidateWeight += minWeightToAdd;
 								
 				//if the newSet is smaller to the target
 				newSetDifference = Math.abs(newSet.displayWeight - targetSet.displayWeight);
+				
+				
 				if (newSet.plateConfiguration.length <= bestCandidateSet.plateConfiguration.length) {
 					bestCandidateSet = newSet;
 					minWeightDifference = newSetDifference;
