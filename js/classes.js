@@ -18,12 +18,26 @@ function SetScheme(data) {
 		'warmupScheme',
 	];
 	
+	var additionalKeys = [
+		'optimize'
+	];
+	
 	for (var i = 0; i < requiredKeys.length; i++) {
 		if (typeof(data[requiredKeys[i]]) == 'undefined') {
 			throw new Error('required key ' + requiredKeys[i] + ' is missing');
 		}
 		
 		this[requiredKeys[i]] = data[requiredKeys[i]];
+	}
+	
+	for (var i = 0; i < additionalKeys.length; i++) {
+		if (typeof(data[additionalKeys[i]]) != 'undefined') {
+			this[additionalKeys[i]] = data[additionalKeys[i]];
+		}
+	}
+	
+	if (typeof(this['optimize']) == 'undefined') {
+		this.optimize = false;
 	}
 	
 	this.warmupScheme.push({ percent:100, reps: 0 });
@@ -33,7 +47,7 @@ function SetScheme(data) {
 	
 	this.calculateSets = function() {
 		var sets = [];
-		
+		var po = new PlateOptimizer();
 		for (var i = 0; i < this.warmupScheme.length; i++) { 
 			var set = new SetFactory(
 				parseInt(this.weightToCalculate * this.warmupScheme[i].percent / 100),
@@ -47,7 +61,9 @@ function SetScheme(data) {
 				}
 			);
 			
-			//set = po.optimize(set);
+			if (this.optimize) {
+				set = po.optimize(set);
+			}
 			
 			sets.push(set);
 			
@@ -163,7 +179,7 @@ function PlateOptimizer()
 		var bestCandidateSet = set;
 		var platesToUse = set.platesToUse.slice();
 		
-		if (1==2) {
+		if (1==1) {
 			
 			//what is the ideal weight we should calculate, using all plates available
 			var targetSet = new SetFactory(
@@ -178,9 +194,17 @@ function PlateOptimizer()
 				}
 			);
 			
+			
 			var minThreshold = .9;
 			var maxThreshold = 1 + ((100 - set.percent) / 4 / 100);
 			
+			var maxConcreteShortage = set.units == 'LB' ? 15 : 8;
+			var maxConcreteOverage  = set.units == 'LB' ? 20 : 10; 
+			/*
+			var minThreshold = 20;
+			var maxThreshold = 20;
+			*/
+
 			console.log('max threshold ' + maxThreshold);
 			
 			//the smallest difference between the targetSet weight and the bestCandidate (so far)
@@ -191,12 +215,19 @@ function PlateOptimizer()
 			var thresholdWeight = parseInt(set.displayWeight * maxThreshold);
 			var minWeightToAdd  = set.units == 'LB' ? 5 : 2; 
 			
+			if (candidateWeight < set.displayWeight - maxConcreteShortage) {
+				candidateWeight = set.displayWeight - maxConcreteShortage;
+			}
+			
+			if (thresholdWeight > set.displayWeight + maxConcreteOverage) {
+				thresholdWeight = set.displayWeight + maxConcreteOverage;
+			}
 			
 			console.log('target set weight ' + targetSet.displayWeight);
 			console.log(set.displayWeight + ' ' + candidateWeight + ' ' + thresholdWeight + ' ' + minWeightToAdd);
 		
-			ii = 0;
-			while (candidateWeight <= thresholdWeight && ii++ < 100) {
+			var j = 0;
+			while (candidateWeight <= thresholdWeight && j++ < 10) {
 
 				var newSet = new SetFactory(
 					candidateWeight,
@@ -211,21 +242,20 @@ function PlateOptimizer()
 				);
 				candidateWeight += minWeightToAdd;
 								
-				//if the newSet is closer to the target
+				//if the newSet is smaller to the target
 				newSetDifference = Math.abs(newSet.displayWeight - targetSet.displayWeight);
-				if (
-					
-					newSet.plateConfiguration.length < bestCandidateSet.plateConfiguration.length
-					
-				) {
+				if (newSet.plateConfiguration.length <= bestCandidateSet.plateConfiguration.length) {
 					bestCandidateSet = newSet;
 					minWeightDifference = newSetDifference;
-				} else if (newSetDifference < minWeightDifference) {
+				} 
+				/*
+				else if (newSetDifference < minWeightDifference) {
 					bestCandidateSet = newSet;
 					minWeightDifference = newSetDifference;
 				
 				//or if it's the same with fewer plates
 				} 
+				*/
 			}
 		}
 

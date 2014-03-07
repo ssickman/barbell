@@ -69,7 +69,7 @@ module('Class Functionality');
 			new PlateConfiguration(45, 1)
 		];
 		var set1 = simpleSetFactory(135, 100);
-		equal(135, set1.displayWeight);
+		equal(set1.displayWeight, 135);
 		deepEqual(set1.plateConfiguration, testPlateConfiguration1, '1x45');
 		
 		var testPlateConfiguration2 = [
@@ -77,7 +77,7 @@ module('Class Functionality');
 			new PlateConfiguration(10, 1)
 		];
 		var set2 = simpleSetFactory(155, 100);
-		equal(155, set2.displayWeight);
+		equal(set2.displayWeight, 155);
 		deepEqual(set2.plateConfiguration, testPlateConfiguration2, '1x45 + 1x10');
 		
 	});
@@ -103,14 +103,14 @@ module('Class Functionality');
 			new PlateConfiguration(45, 1)
 		];
 		var set1 = simpleSetFactory(140, 100);
-		equal(135, set1.displayWeight);
+		equal( set1.displayWeight, 135);
 		deepEqual(set1.plateConfiguration, testPlateConfiguration1, '140lb no small plates');
 		
 		var testPlateConfiguration2 = [
 			new PlateConfiguration(45, 1)
 		];
 		var set2 = simpleSetFactory(145, 100);
-		equal(135, set1.displayWeight);
+		equal(set1.displayWeight, 135);
 		deepEqual(set2.plateConfiguration, testPlateConfiguration2, '145 no small plates');
 		
 	});
@@ -136,7 +136,7 @@ module('Class Functionality');
 			new PlateConfiguration(2.5, 1)
 		];
 		var set1 = simpleSetFactory(140, 100);
-		equal(140, set1.displayWeight);
+		equal(set1.displayWeight, 140);
 		deepEqual(set1.plateConfiguration, testPlateConfiguration1, '140lb with small plates');
 		
 		var testPlateConfiguration2 = [
@@ -144,7 +144,7 @@ module('Class Functionality');
 			new PlateConfiguration(5,  1)
 		];
 		var set2 = simpleSetFactory(145, 100);
-		equal(145, set2.displayWeight);
+		equal(set2.displayWeight, 145);
 		deepEqual(set2.plateConfiguration, testPlateConfiguration2, '145 small plates');
 		
 		var testPlateConfiguration3 = [
@@ -153,7 +153,7 @@ module('Class Functionality');
 			new PlateConfiguration(2.5, 1)
 		];
 		var set3 = simpleSetFactory(150, 100);
-		equal(150, set3.displayWeight);
+		equal(set3.displayWeight, 150);
 		deepEqual(set3.plateConfiguration, testPlateConfiguration3, '150 small plates');
 		
 	});
@@ -204,7 +204,7 @@ module('Class Functionality');
 			new PlateConfiguration(20, 1)
 		];
 		var set1 = simpleSetFactory(60, 100);
-		equal(60, set1.displayWeight);
+		equal(set1.displayWeight, 60);
 		deepEqual(set1.plateConfiguration, testPlateConfiguration1, '1x20');
 		
 		var testPlateConfiguration2 = [
@@ -212,7 +212,7 @@ module('Class Functionality');
 			new PlateConfiguration(15, 1)
 		];
 		var set2 = simpleSetFactory(90, 100);
-		equal(90, set2.displayWeight);
+		equal(set2.displayWeight, 90);
 		deepEqual(set2.plateConfiguration, testPlateConfiguration2, '1x20 + 1x15');
 		
 	});
@@ -239,22 +239,16 @@ module('Class Functionality');
 			new PlateConfiguration(20, 1)
 		];
 		var set1 = simpleSetFactory(62, 100);
-		equal(60, set1.displayWeight);
+		equal(set1.displayWeight, 60);
 		deepEqual(set1.plateConfiguration, testPlateConfiguration1, '140lb no small plates');
 		
 		var testPlateConfiguration2 = [
 			new PlateConfiguration(20, 1)
 		];
 		var set2 = simpleSetFactory(65, 100);
-		equal(60, set1.displayWeight);
+		equal(set1.displayWeight, 60);
 		deepEqual(set2.plateConfiguration, testPlateConfiguration2, '145 no small plates');
 		
-	});
-	
-	test('Plate Optimizer', function(){
-		var po = new PlateOptimizer();
-		
-		throws(function() { po.optimize(''); }, 'Error("PlateOptimizer.optimize accepts only Set() objects")');
 	});
 	
 module('Set Scheme');
@@ -280,8 +274,8 @@ module('Set Scheme');
 		
 		for (var i = 0; i < sets.length; i++) {
 		
-			equal(expectedWeights[i].percent, sets[i].percent, 'percent ok');
-			equal(expectedWeights[i].weight , sets[i].displayWeight, 'weight ok');
+			equal(sets[i].percent,  expectedWeights[i].percent, 'percent ok');
+			equal(sets[i].displayWeight, expectedWeights[i].weight , 'weight ok');
 		}
 
 	});
@@ -308,11 +302,38 @@ module('Set Scheme');
 		
 		for (var i = 0; i < sets.length; i++) {
 		
-			equal(expectedWeights[i].percent, sets[i].percent, 'percent ok');
-			equal(expectedWeights[i].weight , sets[i].displayWeight, 'weight ok');
+			equal(sets[i].percent, expectedWeights[i].percent, 'percent ok');
+			equal(sets[i].displayWeight, expectedWeights[i].weight , 'weight ok');
 		}
 
 	});
+	
+	test('Set Scheme include optimize path', function(){
+		var sc = new SetScheme({
+			units:                 'LB',
+			barbellWeight:         45,
+			weightToCalculate:     315,
+			plateWeightsAvailable: plateWeights.LB,
+			ignoreSmallPlates:     false,
+			warmupScheme:          warmupScheme.slice(0),
+			optimize:              true
+		});
+
+		var expectedWeights = [
+			{percent: 40 , weight: 125},
+			{percent: 67 , weight: 210},
+			{percent: 80 , weight: 250},
+			{percent: 90 , weight: 280},
+			{percent: 100, weight: 315},
+		]
+		
+		var sets = sc.calculateSets();
+		//sc.optimize(sets[4]);
+		
+		ok(sc.optimize, 'optimizer enabled');
+
+	});
+
 	
 	test('Set Scheme missing required key', function(){
 		throws(
@@ -327,6 +348,51 @@ module('Set Scheme');
 			},
 			'Error(\'required key \' + requiredKeys[i] + \' is missing\');'	
 		);
+	});
+
+module('Plate Optimizer');
+	test('Plate Optimizer Instantiation', function(){
+		var po = new PlateOptimizer();
+		
+		throws(function() { po.optimize(''); }, 'Error("PlateOptimizer.optimize accepts only Set() objects")');
+	});
+	
+	test('Optimze to 1 plate from below 135', function(){
+		var sc = new SetScheme({
+			units:                 'LB',
+			barbellWeight:         45,
+			weightToCalculate:     260,
+			plateWeightsAvailable: plateWeights.LB,
+			ignoreSmallPlates:     false,
+			warmupScheme:          [{reps: 1, percent: 50}]
+		});
+
+		var set = sc.calculateSets()[0];
+		
+		equal(set.percent, 50);
+		
+		var po = new PlateOptimizer();
+		var optimized = po.optimize(set);
+		
+		equal(optimized.displayWeight, 135);
+	});
+	
+	test('Trigger Overage', function(){
+		var sc = new SetScheme({
+			units:                 'LB',
+			barbellWeight:         45,
+			weightToCalculate:     810,
+			plateWeightsAvailable: plateWeights.LB,
+			ignoreSmallPlates:     false,
+			warmupScheme:          [{reps: 1, percent: 50}]
+		});
+
+		var set = sc.calculateSets()[0];
+				
+		var po = new PlateOptimizer();
+		var optimized = po.optimize(set);
+		
+		equal(optimized.displayWeight, 405);
 	});
 
 	
@@ -440,8 +506,6 @@ module('BarbellView');
 		var bv = new BarbellView();
 		unbindKo();
 	});
-
-
 
 
 QUnit.done(function(details) {
