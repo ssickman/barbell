@@ -1,19 +1,26 @@
 CACHE MANIFEST
-#rev6
+#rev9
 
 CACHE:
 
 css/normalize.min.css
 css/main.css
+css/font.css
 
 js/vendor/modernizr-2.6.2-respond-1.1.0.min.js
 js/vendor/knockout-3.0.0.js
+//ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js
 
 js/main.js
+js/classes.js
+js/static-data.js
 
+img/gear-icon.png
+img/GitHub-Mark-Light-120px-plus.png
+img/ss-product.png
 
 NETWORK:
-http://www.google-analytics.com/ga.js
+*
 
-FALLBACK:
-/ offline.html
+#FALLBACK:
+#/ offline.html

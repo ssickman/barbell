@@ -137,7 +137,19 @@ var BarbellView = function(storageEnvironment)
 		self.warmupScheme.pop();
 	}
 	
-	
+	self.serializeConfig = function() {
+		var output = [];
+		output.push('u: ' + self.weightUnit())
+		output.push('bw: ' + self.barbellWeight());
+		output.push('ig: ' + self.ignoreSmallPlates());
+		output.push('op: ' + self.preferFewerPlates());
+		
+		for (var i = 0, j = self.warmupScheme().length; i < j;  i++) {
+			output.push(self.warmupScheme()[i].reps + ' @ ' + self.warmupScheme()[i].percent + '%');
+		}
+		
+		return output.join(' | ');
+	}
 	self.calculateSets = function() {
 		
 		if (self.weightToCalculate() == null || self.weightToCalculate() < self.barbellWeight() || isNaN(self.weightToCalculate())) {
@@ -147,6 +159,20 @@ var BarbellView = function(storageEnvironment)
 		if (self.settingsVisible()) {
 			self.toggleSettings();
 		}
+		
+		ga('send', {
+		  'hitType':       'event',         
+		  'eventCategory': 'calculate',
+		  'eventAction':   'weight entered',
+		  'eventLabel':    self.weightToCalculate() + self.weightUnit()
+		});
+		
+		ga('send', {
+		  'hitType':       'event',         
+		  'eventCategory': 'calculate',
+		  'eventAction':   'config setings',
+		  'eventLabel':    self.serializeConfig()
+		});
 		
 		var sc = new SetScheme({
 			units:                 self.weightUnit(),
@@ -186,7 +212,6 @@ var BarbellView = function(storageEnvironment)
 	self.settingsVisible = ko.observable(false);
 	self.settingsVisible.subscribe(function(newValue) {	
 		if (!newValue) {
-		console.log('saving');
 			self.filterAndSaveWarmupScheme();
 		}
 		
@@ -197,12 +222,22 @@ var BarbellView = function(storageEnvironment)
 			return warmup.reps > 0 && warmup.percent > 10;
 		}));
 		
-		console.log(self.warmupScheme());
-		
 		self.storageHandler.set('warmupScheme', self.warmupScheme(), true);
 	}
 	
 	self.toggleSettings = function(e) {
 		self.settingsVisible(!self.settingsVisible());
+		
+		var openClose = 'opened';
+		if (!self.settingsVisible()) {
+			openClose = 'closed';			
+		} 
+
+		ga('send', {
+		  'hitType':       'event',         
+		  'eventCategory': 'settings',
+		  'eventAction':   'toggled',    
+		  'eventLabel':    openClose
+		});
 	}
 }

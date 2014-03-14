@@ -2,9 +2,9 @@
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
 <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+
 <!-- <html class="no-js" manifest="barbell.manifest"> -->
-<!-- <html class="no-js" manifest="barbell.manifest"> -->
-<html class="no-js">
+<html>
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
@@ -187,7 +187,7 @@
 			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 			})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 			
-			ga('create', 'UA-48086069-1', 'barbell.im');
+			ga('create', 'UA-48086069-1', {cookieDomain: window.location.hostname == 'local.barbell' ? 'none' : 'barbell.im'});
 			ga('send', 'pageview');	
 		</script>
     </body>
