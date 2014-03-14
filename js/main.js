@@ -199,7 +199,7 @@ var BarbellView = function(storageEnvironment)
 		
 		self.storageHandler.set('setEntries', self.allSetEntries, true);
 		
-		ga('send', 'event', 'calculate', 'weight entered', weightHeading + self.weightUnit());
+		ga('send', 'event', 'calculate', 'weight entered', self.weightToCalculate() + self.weightUnit());
 		ga('send', 'event',  'calculate', 'config setings', self.serializeConfig());
 		
 	};
