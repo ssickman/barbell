@@ -350,6 +350,38 @@ module('Set Scheme');
 		);
 	});
 
+module('Multiweight Mode');
+	test('Basic multiweight', function(){
+		var sc = new SetScheme({
+			units:                 'LB',
+			barbellWeight:         45,
+			weightToCalculate:     '100*200,300+400#500;600',
+			multiWeightMode:       true,
+			plateWeightsAvailable: plateWeights.LB,
+			ignoreSmallPlates:     true,
+			warmupScheme:          warmupScheme.slice(0)
+		});
+		
+		var expectedWeights = [
+			{percent: 100, weight: 100},
+			{percent: 100, weight: 200},
+			{percent: 100, weight: 300},
+			{percent: 100, weight: 400},
+			{percent: 100, weight: 500},
+			{percent: 100, weight: 600},
+		]
+		
+		var sets = sc.calculateSets();
+		
+		for (var i = 0; i < sets.length; i++) {
+		
+			equal(sets[i].percent, expectedWeights[i].percent, '100 percent ok');
+			equal(sets[i].displayWeight, expectedWeights[i].weight, expectedWeights[i].weight + ' weight ok');
+		}
+
+	});
+
+
 module('Plate Optimizer');
 	test('Plate Optimizer Instantiation', function(){
 		var po = new PlateOptimizer();

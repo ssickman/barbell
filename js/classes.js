@@ -15,11 +15,12 @@ function SetScheme(data) {
 		'weightToCalculate',
 		'plateWeightsAvailable',
 		'ignoreSmallPlates',
-		'warmupScheme',
+		'warmupScheme'
 	];
 	
 	var additionalKeys = [
-		'optimize'
+		'optimize',
+		'multiWeightMode'
 	];
 	
 	for (var i = 0; i < requiredKeys.length; i++) {
@@ -33,24 +34,42 @@ function SetScheme(data) {
 	for (var i = 0; i < additionalKeys.length; i++) {
 		if (typeof(data[additionalKeys[i]]) != 'undefined') {
 			this[additionalKeys[i]] = data[additionalKeys[i]];
+		} else {
+			this[additionalKeys[i]] = false;
 		}
 	}
 	
-	if (typeof(this['optimize']) == 'undefined') {
-		this.optimize = false;
-	}
 	
 	this.warmupScheme.push({ percent:100, reps: 0 });
+	
 	
 	//determine how much padding we need to position sets at bottom of div
 	this.maxPlates = 0;
 	
 	this.calculateSets = function() {
+		
+		if (this.multiWeightMode) {
+			var multiWeights = this.weightToCalculate.split(/[\s*,+#;]+/);
+			this.warmupScheme = [];
+			var weightsToCalculate = []
+			for (var i = 0, j = multiWeights.length; i < j; i++) {
+				if (!isNaN(multiWeights[i]) && multiWeights[i] > 0) {
+					this.warmupScheme.push({ percent:100, reps: 0 });
+					weightsToCalculate.push(multiWeights[i]);
+				}
+			}
+		}
+		
 		var sets = [];
 		var po = new PlateOptimizer();
 		for (var i = 0; i < this.warmupScheme.length; i++) { 
+			var weightToCalculate = this.multiWeightMode
+								  ? weightsToCalculate[i]
+								  : parseInt(this.weightToCalculate * this.warmupScheme[i].percent / 100)
+			;
+			
 			var set = new SetFactory(
-				parseInt(this.weightToCalculate * this.warmupScheme[i].percent / 100),
+				weightToCalculate,
 				this.barbellWeight,
 				this.plateWeightsAvailable.slice(0),
 				this.ignoreSmallPlates && this.warmupScheme[i].percent != 100,

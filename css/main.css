@@ -178,7 +178,7 @@ div.settings-box{
 	width:480px;
 	min-width: 315px;
 	position: absolute;
-	top: -430px;
+	top: -455px;
 	right: 0;
 	transition:all .2s ease-out;
 	padding: 20px 20px 20px;
@@ -507,6 +507,15 @@ h3.weight, ul.sets, .plate, .wrapper, .weight-reps, .title, footer.wrapper h3,
 	cursor: pointer;
 }
 
+.label > .tooltip {
+	display: block;
+    font-size: 12px;
+    font-style: italic;
+    margin-top: -3px;
+    line-height: 140%;
+    font-weight: normal;
+}
+
 .warmup-scheme-wrap .warmup-scheme-label{
 	float: none;
 	margin-left: 0;
@@ -720,7 +729,9 @@ label.single-checkbox-label {
 
 @media only screen and (max-width:480px) {
 	
-	
+	div.settings-box{
+		top:-500px;
+	}
 	
 	.weight-configuration >  li:nth-child(n+2){
 		font-size: 12px;
@@ -799,6 +810,10 @@ label.single-checkbox-label {
 		
 	}
 	
+	label.single-checkbox-label.multi-weight-mode{
+		width:85% !important;
+	}
+	
 	input[type="radio"] + span {
 	    width: 39px;
 	}
@@ -831,18 +846,6 @@ label.single-checkbox-label {
 
 }
 
-/*
-@media only screen and (orientation:landscape) and (max-width:1136px) {
-	.title{
-/* 		display: none; */
-	}
-	body, .title, h3{
-		font-size: 70% !important;
-	}
-}
-*/
-
-
 @media only screen and (min-width: 480px) {
 	.weight-to-calculate-wrap input{
 		/* width: 250px; */
@@ -873,7 +876,7 @@ label.single-checkbox-label {
 	div.settings-box{
 		min-width: 0;
 		padding: 20px 5px;
-		top: -425px;
+		top: -575px;
 	}
 	
 	div.settings-box label.label{
@@ -913,6 +916,10 @@ label.single-checkbox-label {
 	.weight-configuration {
 	    font-size: 12px;
 	}
+	
+	.label > .tooltip {
+		margin-top: 5px;
+	}
 }
 
 @media only screen and (max-width:240px) {
@@ -943,7 +950,7 @@ label.single-checkbox-label {
 	}
 	
 	div.settings-box{
-		top:-500px;
+/* 		top:-600px; */
 	}
 }
 
