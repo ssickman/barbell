@@ -2,6 +2,8 @@ QUnit.done(function() {
   clearTestItems();
 });
 
+var ga = function(){};
+
 module('Class Construction');
 	var pcSize  = 1;
 	var pcCount = 1;
@@ -529,7 +531,8 @@ module('BarbellView');
 		bv.plateWeightsAvailable([]);
 		
 		notEqual(bv.plateWeightsAvailable().length, 0, 'prevent no plates available');
-
+		
+		unbindKo();
 	});
 	
 	test('Hit non test branch of BarbellView', function(){
@@ -537,6 +540,315 @@ module('BarbellView');
 		unbindKo();
 		var bv = new BarbellView();
 		unbindKo();
+	});
+	
+	test('reset weight input', function(){
+		unbindKo();
+		
+		var bv = new BarbellView('test');
+		ko.applyBindings(bv);
+		bv.weightUnit('LB');
+		
+		ok(bv.showGhostLabel());
+		bv.weightToCalculate(135);
+		
+		equal(bv.weightToCalculate(), 135);
+		ok(!bv.showGhostLabel());
+		
+		bv.resetInput();
+		
+		equal(bv.weightToCalculate(), null);
+		ok(bv.showGhostLabel());
+		
+		unbindKo();
+	});
+	
+	test('toggle settings', function(){
+		unbindKo();
+		
+		var bv = new BarbellView('test');
+		ko.applyBindings(bv);
+		bv.weightUnit('LB');
+		
+		ok(!bv.settingsVisible());
+		
+		bv.toggleSettings();
+		
+		ok(bv.settingsVisible());
+		
+		bv.toggleSettings();
+		
+		ok(!bv.settingsVisible());
+
+		
+		unbindKo();
+	});
+	
+	test('remove warmup', function(){
+		unbindKo();
+		
+		var bv = new BarbellView('test');
+		ko.applyBindings(bv);
+		bv.weightUnit('LB');
+		
+		var warmupScheme = bv.warmupScheme().slice(0);
+		
+		deepEqual(bv.warmupScheme(), warmupScheme);
+		equal(bv.warmupScheme().length, warmupScheme.length);
+		
+		bv.removeWarmupSet();
+		
+		notDeepEqual(bv.warmupScheme().length, warmupScheme.length);
+		notEqual(bv.warmupScheme().length, warmupScheme.length);
+		equal(bv.warmupScheme().length, warmupScheme.length - 1);
+		
+		unbindKo();
+	});
+	
+	test('serialize config', function(){
+		unbindKo();
+		
+		var bv = new BarbellView('test');
+		ko.applyBindings(bv);
+		bv.weightUnit('LB');
+		bv.barbellWeight(45);
+		bv.ignoreSmallPlates(true);
+		bv.preferFewerPlates(false);
+		bv.multiWeightMode(false);
+		bv.warmupScheme([
+			{ reps: 5, percent: 40},
+			{ reps: 3, percent: 67},
+			{ reps: 2, percent: 80},
+			{ reps: 1, percent: 90}
+		]);
+		
+		equal(bv.serializeConfig(), 'u: LB | bw: 45 | ig: true | op: false | mw: false | 5 @ 40% | 3 @ 67% | 2 @ 80% | 1 @ 90%');
+		
+		unbindKo();
+	});
+	
+	test('filter and save warmup scheme', function(){
+		unbindKo();
+		
+		var bv = new BarbellView('test');
+		ko.applyBindings(bv);
+		bv.weightUnit('LB');
+		bv.warmupScheme([
+			{ reps: 5, percent: 40},
+			{ reps: 0, percent: 50}
+		]);
+		
+		bv.filterAndSaveWarmupScheme();
+		
+		deepEqual(bv.warmupScheme(), [{ reps: 5, percent: 40 }]);
+		
+		bv.warmupScheme([
+			{ reps: 5, percent: 40},
+			{ reps: 10, percent: 5}
+		]);
+		
+		bv.filterAndSaveWarmupScheme();
+		
+		deepEqual(bv.warmupScheme(), [{ reps: 5, percent: 40 }]);
+		
+		unbindKo();
+	});
+	
+	test('slide down config', function(){
+		unbindKo();
+		expect(0);
+		
+		var bv = new BarbellView('test');
+		ko.applyBindings(bv);
+		bv.weightUnit('LB');
+		jQuery.noConflict();
+		
+		$ = function(){  return $; };
+		$['hide'] = $['slideDown'] = function(){ return this; };
+		
+		bv.slideDownConfig({ nodeType: 1 });
+		
+		unbindKo();
+	});
+	
+	test('add warmup set', function(){
+		unbindKo();
+		
+		var bv = new BarbellView('test');
+		ko.applyBindings(bv);
+		bv.weightUnit('LB');
+		
+		bv.addWarmupSet();
+		
+		deepEqual(bv.warmupScheme().slice(0).pop(), { reps: null, percent: null });
+		
+		unbindKo();
+	});
+	
+	asyncTest('is selected subscribe', function(){
+		unbindKo();
+		
+		var bv = new BarbellView('test');
+		ko.applyBindings(bv);
+		bv.weightUnit('LB');
+		
+		bv.isSelected(true);
+		bv.weightToCalculate(10);
+		equal(bv.weightToCalculate(), 10);
+		
+		bv.isSelected(false);
+		
+		setTimeout(function(){
+			equal(bv.weightToCalculate(), null);
+			
+			start();
+				
+		}, 600);
+		
+		unbindKo();
+	});
+	
+	asyncTest('is selected timeout too fast', function(){
+		unbindKo();
+		
+		var bv = new BarbellView('test');
+		ko.applyBindings(bv);
+		bv.weightUnit('LB');
+		
+		bv.isSelected(true);
+		bv.weightToCalculate(10);
+		equal(bv.weightToCalculate(), 10);
+		
+		bv.isSelected(false);
+		
+		setTimeout(function(){
+			notEqual(bv.weightToCalculate(), null);
+			
+			start();
+				
+		}, 100);
+		
+		unbindKo();
+	});
+	
+	test('config toggles', function(){
+		unbindKo();
+		expect(0);
+		var bv = new BarbellView('test');
+		ko.applyBindings(bv);
+		bv.weightUnit('LB');
+		
+		bv.ignoreSmallPlates(false);
+		bv.preferFewerPlates(false);
+		bv.multiWeightMode(false);
+		
+		bv.ignoreSmallPlates(true);
+		bv.preferFewerPlates(true);
+		bv.multiWeightMode(true);
+		
+		unbindKo();
+	});
+	
+	test('plate class', function(){
+		unbindKo();
+		
+		var bv = new BarbellView('test');
+		ko.applyBindings(bv);
+		bv.weightUnit('LB');
+		
+		equal(bv.plateClass(45,  'LB', 1), 'plate-45LB plate-count-1');
+		equal(bv.plateClass(2.5, 'LB', 1), 'plate-2--5LB plate-count-1');
+		
+		unbindKo();
+	});
+	
+	test('pad and reverse', function(){
+		unbindKo();
+		
+		var bv = new BarbellView('test');
+		ko.applyBindings(bv);
+		bv.weightUnit('LB');
+		
+		var inputPlateArray = [
+			{ size: 45, count: 1 },
+			{ size: 35, count: 1 }
+		];
+		
+		var paddedPlateArray = inputPlateArray.slice(0);
+		paddedPlateArray.push({ size: 0, count: 0 });
+		paddedPlateArray = paddedPlateArray.reverse();
+		
+		deepEqual(bv.padAndReverse(inputPlateArray.slice(), 3), paddedPlateArray);
+		
+		unbindKo();
+	});
+	
+	test('calculate sets', function(){
+		unbindKo();
+		
+		var bv = new BarbellView('test');
+		ko.applyBindings(bv);
+		bv.weightUnit('LB');
+		
+		bv.weightToCalculate(null);
+		equal(bv.calculateSets(), false);
+		
+		bv.barbellWeight(45);
+		bv.weightToCalculate(40);
+		equal(bv.calculateSets(), false);
+		
+		bv.multiWeightMode(false);
+		bv.weightToCalculate('blah');
+		equal(bv.calculateSets(), false);
+		
+		var warmupScheme = [
+			{ reps: 5, percent: 40},
+			{ reps: 3, percent: 67},
+			{ reps: 2, percent: 80},
+			{ reps: 1, percent: 90}
+		];
+
+		bv.warmupScheme(warmupScheme);
+		bv.barbellWeight(45);
+		bv.weightToCalculate(225);
+		bv.settingsVisible(true);
+		bv.calculateSets();
+		var topSet = JSON.parse('{"unit":"LB","weight":225,"platePadding":2,"sets":[{"displayWeight":85,"plateConfiguration":[{"size":10,"count":2}],"barbellWeight":45,"platesToUse":[10,25,35,45],"ignoreSmallPlates":true,"percent":40,"reps":5,"units":"LB"},{"displayWeight":135,"plateConfiguration":[{"size":45,"count":1}],"barbellWeight":45,"platesToUse":[10,25,35,45],"ignoreSmallPlates":true,"percent":67,"reps":3,"units":"LB"},{"displayWeight":175,"plateConfiguration":[{"size":45,"count":1},{"size":10,"count":2}],"barbellWeight":45,"platesToUse":[10,25,35,45],"ignoreSmallPlates":true,"percent":80,"reps":2,"units":"LB"},{"displayWeight":185,"plateConfiguration":[{"size":45,"count":1},{"size":25,"count":1}],"barbellWeight":45,"platesToUse":[10,25,35,45],"ignoreSmallPlates":true,"percent":90,"reps":1,"units":"LB"},{"displayWeight":225,"plateConfiguration":[{"size":45,"count":2}],"barbellWeight":45,"platesToUse":[2.5,5,10,25,35,45],"ignoreSmallPlates":false,"percent":100,"reps":0,"units":"LB"}]}');
+		
+		console.log(topSet);
+		
+		//equal(bv.allSetEntries[0].platePadding, topSet.platePadding);
+		equal(bv.allSetEntries[0].unit, topSet.unit);
+		equal(bv.allSetEntries[0].weight, topSet.weight);
+		equal(bv.allSetEntries[0].sets.length, topSet.sets.length);
+		//deepEqual(bv.allSetEntries[0].sets, topSet.sets);
+		
+		//deepEqual(bv.allSetEntries[0], topSet);
+		
+		unbindKo();
+	});
+	
+	test('weight to calculate ui', function(){
+		unbindKo();
+		
+		var bv = new BarbellView('test');
+		ko.applyBindings(bv);
+		bv.weightUnit('LB');
+		
+		ok(bv.showGhostLabel());
+		ok(bv.isSelected());
+		
+		bv.weightToCalculate(1);
+		ok(!bv.showGhostLabel());
+		ok(bv.isSelected());
+		
+		bv.multiWeightMode(false);
+		bv.weightToCalculate('155');
+		ok(!bv.showGhostLabel());
+		ok(!bv.isSelected());
+		
+		
+		
 	});
 
 

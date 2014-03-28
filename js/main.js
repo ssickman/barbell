@@ -87,10 +87,6 @@ var BarbellView = function(storageEnvironment)
 	}
 	
 	self.displayConfigurationsNumber = 3;
-	self.showMoreConfigurations = function() {
-		self.displayConfigurationsNumber = 10;
-		self.setEntries(self.allSetEntries.slice(0, self.displayConfigurationsNumber));
-	}
 	
 	self.allSetEntries = self.storageHandler.getWithDefault('setEntries', [], true);
 	self.setEntries      = ko.observableArray(self.allSetEntries.slice(0, self.displayConfigurationsNumber));
