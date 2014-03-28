@@ -8,6 +8,11 @@ var plateWeights = {
 	"KG": [  1, 2.5,  5, 10, 15, 20]
 };
 
+var plateWeightQuantities = {
+	"LB": {'2.5': 10, '5': 10, '10': 10, '25': 10, '35': 10, '45': 10},
+	"KG": {'1': 10, '2.5': 10, '5': 10, '10': 10, '15': 10, '2': 10}
+}
+
 var warmupScheme = [
 	{ reps: 5, percent: 40},
 	{ reps: 3, percent: 67},

@@ -375,6 +375,15 @@ ul.sets{
 	width: 80%;
 }
 
+.max-plate-quantity{
+	background: none repeat scroll 0 0 #F0F0F0;
+    font-size: 14px;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    width: 100%;
+    display: none;
+}
 
 .settings-box{
 	background: #f9f9f9;

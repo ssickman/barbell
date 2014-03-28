@@ -3,8 +3,7 @@
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
 <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
 
-<!-- <html class="no-js" manifest="barbell.manifest"> -->
-<html>
+<html class="no-js" manifest="http://barbell.im/barbell.manifest">
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
@@ -81,7 +80,9 @@
 						<!-- ko foreach: plateWeights -->
 							<label>
 								<input type="checkbox" value="LB" data-bind="checkedValue: $data, checked: $root.plateWeightsAvailable">  
-								<span data-bind="text: $data"></span>
+								<span><span data-bind="text: $data"></span>
+								<input class="max-plate-quantity" type="text" style="width: 100%; margin: 0px; padding: 0px;" data-bind="">
+								</span>
 							</label>
 						<!-- /ko -->
 						</div>
@@ -171,8 +172,6 @@
                			              			
               		</li>
               	</ul>
-              	
-              	<button id="load-more-configs"  class="button1" data-bind="click: showMoreConfigurations, visible: displayConfigurationsNumber < allSetEntries.length">Load More</button>        
               	              	
             </div> <!-- #main -->
         </div> <!-- #main-container -->

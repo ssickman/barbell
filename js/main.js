@@ -41,7 +41,6 @@ var BarbellView = function(storageEnvironment)
 	//set plate choices and check all initially
 	self.plateWeights = ko.observableArray(plateWeights[self.weightUnit()]);
 	self.plateWeightsAvailable = ko.observableArray(self.storageHandler.getWithDefault('plateWeightsAvailable' + self.weightUnit(), plateWeights[self.weightUnit()], true));
-	
 	self.plateWeightsAvailable.subscribe(function(newValue) {	
 		
 		currentPlatesAvailable = self.storageHandler.getWithDefault('plateWeightsAvailable' + self.weightUnit(), plateWeights[self.weightUnit()], true)
@@ -55,7 +54,6 @@ var BarbellView = function(storageEnvironment)
 			self.storageHandler.set('plateWeightsAvailable' + self.weightUnit(), newValue, true);
 		}
 	});
-	
 	
 	self.showGhostLabel = ko.observable(true);
 	
