@@ -89,6 +89,12 @@
 	
 					</div>
 					
+					<div class="plate-quantity-wrap config-wrap" >
+						<ul data-bind="foreach: plateWeightQuantities">
+							<li><span data-bind="text: size"></span> - <input data-bind="value: total"></li>
+						</ul>
+					</div>
+					
 					<div class="warmup-scheme-wrap config-wrap settings-divider">
 						<label for="barbell-weight" class="label single-checkbox-label warmup-scheme-label">Warmup Scheme</label>
 						<div class="warmup-input-wrap">

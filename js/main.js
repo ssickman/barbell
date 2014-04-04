@@ -27,7 +27,8 @@ var BarbellView = function(storageEnvironment)
 		//restore available plates
 
 		self.plateWeightsAvailable(self.storageHandler.getWithDefault('plateWeightsAvailable' + self.weightUnit(), plateWeights[self.weightUnit()], true));
-
+		self.plateWeightQuantities(self.storageHandler.getWithDefault('plateWeightQuantities' + self.weightUnit(), plateWeightQuantities[self.weightUnit()], true));
+		
 		self.storageHandler.set('weightUnit', newValue);
 	});
 	
@@ -54,6 +55,24 @@ var BarbellView = function(storageEnvironment)
 			self.storageHandler.set('plateWeightsAvailable' + self.weightUnit(), newValue, true);
 		}
 	});
+	
+	//keep track of the quantities of ecah plate available (ex: home gym 225 = 45 + 35 + 10)
+	self.plateWeightQuantities =  ko.observableArray(self.storageHandler.getWithDefault('plateWeightQuantities' + self.weightUnit(), plateWeightQuantities[self.weightUnit()], true));
+	self.savePlateWeightQuantities = function() {
+		self.storageHandler.set('plateWeightQuantities' + self.weightUnit(), self.plateWeightQuantities(), true);
+		self.indexPlateWeightQuantities();
+	};
+	
+	self.plateWeightQuantitiesIndex = {};
+	self.indexPlateWeightQuantities = function() {
+		self.plateWeightQuantitiesIndex = {};
+		for (var i = 0, length = self.plateWeightQuantities().length; i < length; i++) {
+			var weight = self.plateWeightQuantities()[i];
+			self.plateWeightQuantitiesIndex[weight.size] = weight.total;
+		}
+	}; self.indexPlateWeightQuantities();
+	
+	
 	
 	self.showGhostLabel = ko.observable(true);
 	
@@ -160,12 +179,13 @@ var BarbellView = function(storageEnvironment)
 		if (self.settingsVisible()) {
 			self.toggleSettings();
 		}
-		
+
 		var sc = new SetScheme({
 			units:                 self.weightUnit(),
 			barbellWeight:         self.barbellWeight(),
 			weightToCalculate:     self.weightToCalculate(),
 			plateWeightsAvailable: self.plateWeightsAvailable().slice(0),
+			plateWeightQuantities: self.plateWeightQuantitiesIndex,
 			ignoreSmallPlates:     self.ignoreSmallPlates(),
 			warmupScheme:          self.warmupScheme().slice(0),
 			optimize:              self.preferFewerPlates(),
@@ -211,6 +231,7 @@ var BarbellView = function(storageEnvironment)
 	self.settingsVisible.subscribe(function(newValue) {	
 		if (!newValue) {
 			self.filterAndSaveWarmupScheme();
+			self.savePlateWeightQuantities();
 		}
 		
 	});

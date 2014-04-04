@@ -3,6 +3,10 @@ QUnit.done(function() {
 });
 
 var ga = function(){};
+var testplateWeightQuantities = {
+	"LB": {'2.5': 10, '5': 10, '10': 10, '25': 10, '35': 10, '45': 10},
+	"KG": {'1': 10, '2.5': 10, '5': 10, '10': 10, '15': 10, '20': 10}
+};
 
 module('Class Construction');
 	var pcSize  = 1;
@@ -37,6 +41,7 @@ module('Class Construction');
 			135,
 			barbellWeight,
 			pWeights,
+			testplateWeightQuantities.LB,
 			false,
 			{
 				percent: 100,
@@ -58,6 +63,7 @@ module('Class Functionality');
 				weightToCalculate,
 				barbellWeight,
 				pWeights,
+				testplateWeightQuantities.LB,
 				false,
 				{
 					percent: percentToCalculate,
@@ -84,6 +90,34 @@ module('Class Functionality');
 		
 	});
 	
+	test('Set Factory Calculation Limited Plate Quantities', function(){	
+		var simpleSetFactory = function(weightToCalculate, percentToCalculate) {
+			var pWeights = plateWeights.LB.slice(0)
+			return  new SetFactory(
+				weightToCalculate,
+				barbellWeight,
+				pWeights,
+				{'2.5': 10, '5': 10, '10': 10, '25': 10, '35': 10, '45': 1},
+				false,
+				{
+					percent: percentToCalculate,
+					reps:    1,
+					units:   'LB'
+				}
+			);
+		}
+		
+		var testPlateConfiguration1 = [
+			new PlateConfiguration(45, 1),
+			new PlateConfiguration(35, 1),
+			new PlateConfiguration(10, 1)
+		];
+		var set1 = simpleSetFactory(225, 100);
+		equal(set1.displayWeight, 225);
+		deepEqual(set1.plateConfiguration, testPlateConfiguration1, '1x45 1x35 1x10');
+	});
+
+	
 	
 	test('Set Factory Calculation Ignore Small Plates', function(){	
 		var simpleSetFactory = function(weightToCalculate, percentToCalculate) {
@@ -92,6 +126,7 @@ module('Class Functionality');
 				weightToCalculate,
 				barbellWeight,
 				pWeights,
+				testplateWeightQuantities.LB,
 				true,
 				{
 					percent: percentToCalculate,
@@ -124,6 +159,7 @@ module('Class Functionality');
 				weightToCalculate,
 				barbellWeight,
 				pWeights,
+				testplateWeightQuantities.LB,
 				false,
 				{
 					percent: percentToCalculate,
@@ -167,6 +203,7 @@ module('Class Functionality');
 				weightToCalculate,
 				barbellWeight,
 				pWeights,
+				testplateWeightQuantities.LB,
 				true,
 				{
 					percent: percentToCalculate,
@@ -193,6 +230,7 @@ module('Class Functionality');
 				weightToCalculate,
 				20,
 				pWeights2,
+				testplateWeightQuantities.KG,
 				false,
 				{
 					percent: percentToCalculate,
@@ -228,6 +266,7 @@ module('Class Functionality');
 				weightToCalculate,
 				20,
 				pWeights2,
+				testplateWeightQuantities.KG,
 				true,
 				{
 					percent: percentToCalculate,
@@ -260,6 +299,7 @@ module('Set Scheme');
 			barbellWeight:         45,
 			weightToCalculate:     315,
 			plateWeightsAvailable: plateWeights.LB,
+			plateWeightQuantities: testplateWeightQuantities.LB,
 			ignoreSmallPlates:     true,
 			warmupScheme:          warmupScheme.slice(0)
 		});
@@ -288,6 +328,7 @@ module('Set Scheme');
 			barbellWeight:         45,
 			weightToCalculate:     315,
 			plateWeightsAvailable: plateWeights.LB,
+			plateWeightQuantities: testplateWeightQuantities.LB,
 			ignoreSmallPlates:     false,
 			warmupScheme:          warmupScheme.slice(0)
 		});
@@ -316,6 +357,7 @@ module('Set Scheme');
 			barbellWeight:         45,
 			weightToCalculate:     315,
 			plateWeightsAvailable: plateWeights.LB,
+			plateWeightQuantities: testplateWeightQuantities.LB,
 			ignoreSmallPlates:     false,
 			warmupScheme:          warmupScheme.slice(0),
 			optimize:              true
@@ -345,6 +387,7 @@ module('Set Scheme');
 					barbellWeight:         45,
 					weightToCalculate:     315,
 					plateWeightsAvailable: plateWeights.LB,
+					plateWeightQuantities: testplateWeightQuantities.LB,
 					ignoreSmallPlates:     true,
 				});
 			},
@@ -360,6 +403,7 @@ module('Multiweight Mode');
 			weightToCalculate:     '100*200,300+400#500;600',
 			multiWeightMode:       true,
 			plateWeightsAvailable: plateWeights.LB,
+			plateWeightQuantities: testplateWeightQuantities.LB,
 			ignoreSmallPlates:     true,
 			warmupScheme:          warmupScheme.slice(0)
 		});
@@ -397,6 +441,7 @@ module('Plate Optimizer');
 			barbellWeight:         45,
 			weightToCalculate:     260,
 			plateWeightsAvailable: plateWeights.LB,
+			plateWeightQuantities: testplateWeightQuantities.LB,
 			ignoreSmallPlates:     false,
 			warmupScheme:          [{reps: 1, percent: 50}]
 		});
@@ -417,6 +462,7 @@ module('Plate Optimizer');
 			barbellWeight:         45,
 			weightToCalculate:     810,
 			plateWeightsAvailable: plateWeights.LB,
+			plateWeightQuantities: testplateWeightQuantities.LB,
 			ignoreSmallPlates:     false,
 			warmupScheme:          [{reps: 1, percent: 50}]
 		});
@@ -654,6 +700,29 @@ module('BarbellView');
 		unbindKo();
 	});
 	
+	test('index plate quantities', function(){
+		unbindKo();
+		
+		var bv = new BarbellView('test');
+		ko.applyBindings(bv);
+		bv.weightUnit('LB');
+		
+		bv.plateWeightQuantities([
+			{size: 1, total: 1},
+			{size: 2, total: 2},
+			{size: 3, total: 3},
+			{size: 4, total: 4},
+		]);
+
+		bv.indexPlateWeightQuantities();
+		console.log(bv.plateWeightQuantitiesIndex);
+		for (var i = 1; i <= 4; i++) {
+			equal(bv.plateWeightQuantitiesIndex[i], i);
+		}
+		
+		unbindKo();
+	});
+	
 	test('slide down config', function(){
 		unbindKo();
 		expect(0);
@@ -814,8 +883,6 @@ module('BarbellView');
 		bv.settingsVisible(true);
 		bv.calculateSets();
 		var topSet = JSON.parse('{"unit":"LB","weight":225,"platePadding":2,"sets":[{"displayWeight":85,"plateConfiguration":[{"size":10,"count":2}],"barbellWeight":45,"platesToUse":[10,25,35,45],"ignoreSmallPlates":true,"percent":40,"reps":5,"units":"LB"},{"displayWeight":135,"plateConfiguration":[{"size":45,"count":1}],"barbellWeight":45,"platesToUse":[10,25,35,45],"ignoreSmallPlates":true,"percent":67,"reps":3,"units":"LB"},{"displayWeight":175,"plateConfiguration":[{"size":45,"count":1},{"size":10,"count":2}],"barbellWeight":45,"platesToUse":[10,25,35,45],"ignoreSmallPlates":true,"percent":80,"reps":2,"units":"LB"},{"displayWeight":185,"plateConfiguration":[{"size":45,"count":1},{"size":25,"count":1}],"barbellWeight":45,"platesToUse":[10,25,35,45],"ignoreSmallPlates":true,"percent":90,"reps":1,"units":"LB"},{"displayWeight":225,"plateConfiguration":[{"size":45,"count":2}],"barbellWeight":45,"platesToUse":[2.5,5,10,25,35,45],"ignoreSmallPlates":false,"percent":100,"reps":0,"units":"LB"}]}');
-		
-		console.log(topSet);
 		
 		//equal(bv.allSetEntries[0].platePadding, topSet.platePadding);
 		equal(bv.allSetEntries[0].unit, topSet.unit);

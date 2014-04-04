@@ -8,9 +8,14 @@ var plateWeights = {
 	"KG": [  1, 2.5,  5, 10, 15, 20]
 };
 
-var plateWeightQuantities = {
-	"LB": {'2.5': 10, '5': 10, '10': 10, '25': 10, '35': 10, '45': 10},
-	"KG": {'1': 10, '2.5': 10, '5': 10, '10': 10, '15': 10, '2': 10}
+var plateWeightQuantities = {};
+
+for (unit in plateWeights) {
+	plateWeightQuantities[unit] = [];
+	
+	for (var i = 0, length = plateWeights[unit].length; i < length; i++) {
+		plateWeightQuantities[unit].push({size: plateWeights[unit][i], total: 10});
+	}
 }
 
 var warmupScheme = [

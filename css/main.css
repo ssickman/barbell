@@ -178,7 +178,7 @@ div.settings-box{
 	width:480px;
 	min-width: 315px;
 	position: absolute;
-	top: -455px;
+	top: -1455px;
 	right: 0;
 	transition:all .2s ease-out;
 	padding: 20px 20px 20px;
@@ -295,7 +295,12 @@ div.weight-to-calculate{
 	margin: 0;
 	list-style: none;
 } .weight-configuration >  li{
-
+	/*
+height: 0;
+	transition: .5s all ease-out;
+*/
+} .weight-configuration >  li.slidedown{
+	/* height: auto; */
 } .weight-configuration h3.weight{
 	font-weight: normal;
 	font-size: 16px;

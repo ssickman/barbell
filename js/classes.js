@@ -14,6 +14,7 @@ function SetScheme(data) {
 		'barbellWeight',
 		'weightToCalculate',
 		'plateWeightsAvailable',
+		'plateWeightQuantities',
 		'ignoreSmallPlates',
 		'warmupScheme'
 	];
@@ -67,11 +68,12 @@ function SetScheme(data) {
 								  ? weightsToCalculate[i]
 								  : parseInt(this.weightToCalculate * this.warmupScheme[i].percent / 100)
 			;
-			
+
 			var set = new SetFactory(
 				weightToCalculate,
 				this.barbellWeight,
 				this.plateWeightsAvailable.slice(0),
+				this.plateWeightQuantities,
 				this.ignoreSmallPlates && this.warmupScheme[i].percent != 100,
 				{
 					percent: this.warmupScheme[i].percent,
@@ -93,7 +95,7 @@ function SetScheme(data) {
 	}
 }
 
-function SetFactory(weightToCalculate, barbellWeight, platesToUsePassed, ignoreSmallPlates, setDisplayData) {
+function SetFactory(weightToCalculate, barbellWeight, platesToUsePassed, plateWeightQuantities, ignoreSmallPlates, setDisplayData) {
 	
 	var platesToUse = platesToUsePassed.slice();
 	platesToUse.sort(function(a, b) { return a - b; });
@@ -105,12 +107,14 @@ function SetFactory(weightToCalculate, barbellWeight, platesToUsePassed, ignoreS
 	
 	//make a copy to store on the set
 	var setPlatesToUse = platesToUse.slice(0);
-
-	var set = this.calculateSet(weightToCalculate, barbellWeight, platesToUse);
+	
+	var set = this.calculateSet(weightToCalculate, barbellWeight, platesToUse, plateWeightQuantities);
 
 	set.barbellWeight     = barbellWeight;
 	set.platesToUse       = setPlatesToUse; 
 	set.ignoreSmallPlates = ignoreSmallPlates;
+	
+	set.plateWeightQuantities = plateWeightQuantities;
 	
 	if (typeof(setDisplayData) == 'object') {
 		for (var key in setDisplayData) {
@@ -142,29 +146,30 @@ SetFactory.prototype.removeSmallPlates = function(platesToUse, units) {
 	return platesToUse;
 }
 
-SetFactory.prototype.calculateSet = function(weightToCalculate, barbellWeight, platesToUse) {
+SetFactory.prototype.calculateSet = function(weightToCalculate, barbellWeight, platesToUse, plateWeightQuantities) {
 	//console.log(weightToCalculate);
 	var left = weightToCalculate - barbellWeight;
 			
 	var plateConfiguration = [];
 	var plateCount = 0;
-
+	
 	while (left > 0 && platesToUse.length > 0) {
 		//go from heaviest to lightest
 		var plateSize = platesToUse[platesToUse.length - 1];
+		var platesLeft = parseInt(plateWeightQuantities[plateSize]) - plateCount;
 		
 		//need a balanced bar
 		var weightToSubtract =  plateSize * 2;
 		
 		//we can still use this plate
-		if (left - weightToSubtract >= 0) {
+		if (left - weightToSubtract >= 0 && platesLeft > 0) {
 			left -= weightToSubtract;
 			plateCount++;
 		} else {
 			platesToUse.pop();
 		}
 		
-		if (plateCount > 0 && left - weightToSubtract < 0) {
+		if (plateCount > 0 && (platesLeft == 0 || left - weightToSubtract < 0)) {
 			plateConfiguration.push(new PlateConfiguration(
 				plateSize,
 				plateCount		
@@ -199,12 +204,13 @@ function PlateOptimizer()
 		var platesToUse = set.platesToUse.slice();
 		
 		if (1==1) {
-			
+			//console.log(set.plateWeightQuantities);
 			//what is the ideal weight we should calculate, using all plates available
 			var targetSet = new SetFactory(
 				set.displayWeight,
 				set.barbellWeight,
 				set.platesToUse,
+				set.plateWeightQuantities,
 				false,
 				{
 					percent: set.percent,
@@ -224,7 +230,7 @@ function PlateOptimizer()
 			var maxThreshold = 20;
 			*/
 
-			console.log('max threshold ' + maxThreshold);
+			//console.log('max threshold ' + maxThreshold);
 			
 			//the smallest difference between the targetSet weight and the bestCandidate (so far)
 			var minWeightDifference = targetSet.displayWeight - bestCandidateSet.displayWeight;
@@ -243,8 +249,8 @@ function PlateOptimizer()
 				thresholdWeight = set.displayWeight + maxConcreteOverage;
 			}
 			
-			console.log('target set weight ' + targetSet.displayWeight);
-			console.log(set.displayWeight + ' ' + candidateWeight + ' ' + thresholdWeight + ' ' + minWeightToAdd);
+			//console.log('target set weight ' + targetSet.displayWeight);
+			//console.log(set.displayWeight + ' ' + candidateWeight + ' ' + thresholdWeight + ' ' + minWeightToAdd);
 		
 			var j = 0;
 			while (candidateWeight <= thresholdWeight && j++ < 10) {
@@ -253,6 +259,7 @@ function PlateOptimizer()
 					candidateWeight,
 					set.barbellWeight,
 					set.platesToUse,
+					set.plateWeightQuantities,
 					false,
 					{
 						percent: set.percent,
@@ -261,7 +268,7 @@ function PlateOptimizer()
 					}
 				);
 				
-				console.log('candidate: ' + candidateWeight);
+				//console.log('candidate: ' + candidateWeight);
 				
 				candidateWeight += minWeightToAdd;
 								
