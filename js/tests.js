@@ -36,7 +36,7 @@ module('Class Construction');
 	
 	test('Set Factory Basics', function(){	
 		
-		var pWeights = plateWeights.LB.slice(0)
+		var pWeights = plateWeights.LB.slice(0);
 		var set = new SetFactory(
 			135,
 			barbellWeight,
@@ -58,7 +58,7 @@ module('Class Construction');
 module('Class Functionality');
 	test('Set Factory Calculation Basics', function(){	
 		var simpleSetFactory = function(weightToCalculate, percentToCalculate) {
-			var pWeights = plateWeights.LB.slice(0)
+			var pWeights = plateWeights.LB.slice(0);
 			return  new SetFactory(
 				weightToCalculate,
 				barbellWeight,
@@ -71,7 +71,7 @@ module('Class Functionality');
 					units:   'LB'
 				}
 			);
-		}
+		};
 		
 		var testPlateConfiguration1 = [
 			new PlateConfiguration(45, 1)
@@ -92,7 +92,7 @@ module('Class Functionality');
 	
 	test('Set Factory Calculation Limited Plate Quantities', function(){	
 		var simpleSetFactory = function(weightToCalculate, percentToCalculate) {
-			var pWeights = plateWeights.LB.slice(0)
+			var pWeights = plateWeights.LB.slice(0);
 			return  new SetFactory(
 				weightToCalculate,
 				barbellWeight,
@@ -105,7 +105,7 @@ module('Class Functionality');
 					units:   'LB'
 				}
 			);
-		}
+		};
 		
 		var testPlateConfiguration1 = [
 			new PlateConfiguration(45, 1),
@@ -121,7 +121,7 @@ module('Class Functionality');
 	
 	test('Set Factory Calculation Ignore Small Plates', function(){	
 		var simpleSetFactory = function(weightToCalculate, percentToCalculate) {
-			var pWeights = plateWeights.LB.slice(0)
+			var pWeights = plateWeights.LB.slice(0);
 			return  new SetFactory(
 				weightToCalculate,
 				barbellWeight,
@@ -134,7 +134,7 @@ module('Class Functionality');
 					units:   'LB'
 				}
 			);
-		}
+		};
 		
 		var testPlateConfiguration1 = [
 			new PlateConfiguration(45, 1)
@@ -154,7 +154,7 @@ module('Class Functionality');
 	
 	test('Set Factory Calculation Include Small Plates', function(){	
 		var simpleSetFactory = function(weightToCalculate, percentToCalculate) {
-			var pWeights = plateWeights.LB.slice(0)
+			var pWeights = plateWeights.LB.slice(0);
 			return  new SetFactory(
 				weightToCalculate,
 				barbellWeight,
@@ -167,7 +167,7 @@ module('Class Functionality');
 					units:   'LB'
 				}
 			);
-		}
+		};
 		
 		var testPlateConfiguration1 = [
 			new PlateConfiguration(45 , 1),
@@ -211,7 +211,7 @@ module('Class Functionality');
 					units:   'LB'
 				}
 			);
-		}
+		};
 		
 		var testPlateConfiguration1 = [
 			new PlateConfiguration(45, 1),
@@ -225,7 +225,7 @@ module('Class Functionality');
 	test('Set Factory Calculation Basics KG', function(){	
 		var pWeights2 = plateWeights.KG.slice(0);
 		var simpleSetFactory = function(weightToCalculate, percentToCalculate) {
-			var pWeights = plateWeights.LB.slice(0)
+			var pWeights = plateWeights.LB.slice(0);
 			return  new SetFactory(
 				weightToCalculate,
 				20,
@@ -238,7 +238,7 @@ module('Class Functionality');
 					units:   'KG'
 				}
 			);
-		}
+		};
 		
 		var testPlateConfiguration1 = [
 			new PlateConfiguration(20, 1)
@@ -261,7 +261,7 @@ module('Class Functionality');
 	test('Set Factory Calculation Basics KG', function(){	
 		var pWeights2 = plateWeights.KG.slice(0);
 		var simpleSetFactory = function(weightToCalculate, percentToCalculate) {
-			var pWeights = plateWeights.LB.slice(0)
+			var pWeights = plateWeights.LB.slice(0);
 			return  new SetFactory(
 				weightToCalculate,
 				20,
@@ -274,7 +274,7 @@ module('Class Functionality');
 					units:   'KG'
 				}
 			);
-		}
+		};
 		
 		var testPlateConfiguration1 = [
 			new PlateConfiguration(20, 1)
@@ -310,7 +310,7 @@ module('Set Scheme');
 			{percent: 80 , weight: 245},
 			{percent: 90 , weight: 275},
 			{percent: 100, weight: 315},
-		]
+		];
 		
 		var sets = sc.calculateSets();
 		
@@ -339,7 +339,7 @@ module('Set Scheme');
 			{percent: 80 , weight: 250},
 			{percent: 90 , weight: 280},
 			{percent: 100, weight: 315},
-		]
+		];
 		
 		var sets = sc.calculateSets();
 		
@@ -369,7 +369,7 @@ module('Set Scheme');
 			{percent: 80 , weight: 250},
 			{percent: 90 , weight: 280},
 			{percent: 100, weight: 315},
-		]
+		];
 		
 		var sets = sc.calculateSets();
 		//sc.optimize(sets[4]);
@@ -415,7 +415,7 @@ module('Multiweight Mode');
 			{percent: 100, weight: 400},
 			{percent: 100, weight: 500},
 			{percent: 100, weight: 600},
-		]
+		];
 		
 		var sets = sc.calculateSets();
 		
@@ -485,7 +485,7 @@ module('Storage Handler');
 		
 		equal(st.isSupported(), true, 'storage supported');
 		
-		var stringContent1 = 'blah'
+		var stringContent1 = 'blah';
 		var stringContent2 = 'wow';
 		var stringKey      = 'test1';
 		
@@ -733,7 +733,7 @@ module('BarbellView');
 		jQuery.noConflict();
 		
 		$ = function(){  return $; };
-		$['hide'] = $['slideDown'] = function(){ return this; };
+		$.hide = $.slideDown = function(){ return this; };
 		
 		bv.slideDownConfig({ nodeType: 1 });
 		

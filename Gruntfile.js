@@ -19,12 +19,15 @@ module.exports = function(grunt) {
 	        	'css/<%= pkg.name %>.min.css': ['css/normalize.min.css', 'css/font.css', 'css/main.css']
 			} 
     	}
-    }
+    },
+    jshint: {
+	    all: ['Gruntfile.js', 'js/static-data.js', 'js/classes.js', 'js/main.js', 'js/tests.js']
+	  }
   });
 
-  // Load the plugin that provides the "uglify" task.
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-cssmin');
+  grunt.loadNpmTasks('grunt-contrib-jshint');
 
   // Default task(s).
   grunt.registerTask('default', ['uglify', 'cssmin']);

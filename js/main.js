@@ -1,4 +1,4 @@
-(function() {  if (!window.console) {    window.console = {};  }  var m = [    "log", "info", "warn", "error", "debug", "trace", "dir", "group",    "groupCollapsed", "groupEnd", "time", "timeEnd", "profile", "profileEnd",    "dirxml", "assert", "count", "markTimeline", "timeStamp", "clear"  ];  for (var i = 0; i < m.length; i++) {    if (!window.console[m[i]]) {      window.console[m[i]] = function() {};    }      } })();
+(function() {  if (!window.console) {  window.console = {};  }  var m = [    "log", "info", "warn", "error", "debug", "trace", "dir", "group",    "groupCollapsed", "groupEnd", "time", "timeEnd", "profile", "profileEnd",    "dirxml", "assert", "count", "markTimeline", "timeStamp", "clear"  ];  var dummy = function() {}; for (var i = 0; i < m.length; i++) {    if (!window.console[m[i]]) {      window.console[m[i]] = dummy;    }      } })();
 
 var $ = jQuery.noConflict();
 
@@ -7,7 +7,7 @@ var BarbellView = function(storageEnvironment)
 	var self = this;
 
 	if (typeof(storageEnvironment) == 'undefined') {
-		storageEnvironment = 'production'
+		storageEnvironment = 'production';
 	}
 
 	self.units = ko.observableArray([
@@ -37,17 +37,17 @@ var BarbellView = function(storageEnvironment)
 	self.barbellWeight  = ko.observable(barbellWeights[self.weightUnit()][0]);
 	self.barbellWeightDisplay = function(weight) {
 		return weight + ' ' + self.weightUnit();
-	}
+	};
 
 	//set plate choices and check all initially
 	self.plateWeights = ko.observableArray(plateWeights[self.weightUnit()]);
 	self.plateWeightsAvailable = ko.observableArray(self.storageHandler.getWithDefault('plateWeightsAvailable' + self.weightUnit(), plateWeights[self.weightUnit()], true));
 	self.plateWeightsAvailable.subscribe(function(newValue) {	
 		
-		currentPlatesAvailable = self.storageHandler.getWithDefault('plateWeightsAvailable' + self.weightUnit(), plateWeights[self.weightUnit()], true)
+		currentPlatesAvailable = self.storageHandler.getWithDefault('plateWeightsAvailable' + self.weightUnit(), plateWeights[self.weightUnit()], true);
 		
 		//prevent not having any plates
-		if (newValue.length == 0 && currentPlatesAvailable.length == 1) {
+		if (newValue.length === 0 && currentPlatesAvailable.length === 1) {
 			self.plateWeightsAvailable(currentPlatesAvailable);
 		
 			//alert('Whatcha gonna lift, bro?'); //comment out for now, use non alert later
@@ -81,7 +81,7 @@ var BarbellView = function(storageEnvironment)
 	self.weightToCalculate.subscribe(function(newValue) {	
 		self.showGhostLabel(false);
 		
-		weightLength = newValue == null ? 0 : newValue.length;
+		weightLength = newValue === null ? 0 : newValue.length;
 		
 		if (weightLength == 3 && !self.multiWeightMode()) {
 			self.isSelected(false);
@@ -93,7 +93,7 @@ var BarbellView = function(storageEnvironment)
 		
 		if (!newValue) {
 			self.calculateSets();
-			setTimeout(self.resetInput, 500)
+			setTimeout(self.resetInput, 500);
 		}
 	});
 	
@@ -101,7 +101,7 @@ var BarbellView = function(storageEnvironment)
 		self.weightToCalculate(null);
 		self.showGhostLabel(true);
 		//self.isSelected(true);
-	}
+	};
 	
 	self.displayConfigurationsNumber = 3;
 	
@@ -149,15 +149,15 @@ var BarbellView = function(storageEnvironment)
 			percent: null,
 			reps:    null
 		});
-	}
+	};
 	
 	self.removeWarmupSet = function() {
 		self.warmupScheme.pop();
-	}
+	};
 	
 	self.serializeConfig = function() {
 		var output = [];
-		output.push('u: ' + self.weightUnit())
+		output.push('u: ' + self.weightUnit());
 		output.push('bw: ' + self.barbellWeight());
 		output.push('ig: ' + self.ignoreSmallPlates());
 		output.push('op: ' + self.preferFewerPlates());
@@ -168,11 +168,12 @@ var BarbellView = function(storageEnvironment)
 		}
 		
 		return output.join(' | ');
-	}
+	};
+	
 	self.calculateSets = function() {
 		
 		
-		if (self.weightToCalculate() == null || self.weightToCalculate() < self.barbellWeight() || (isNaN(self.weightToCalculate()) && !self.multiWeightMode())) {
+		if (self.weightToCalculate() === null || self.weightToCalculate() < self.barbellWeight() || (isNaN(self.weightToCalculate()) && !self.multiWeightMode())) {
 			return false;
 		}
 		
@@ -194,10 +195,7 @@ var BarbellView = function(storageEnvironment)
 		var sets = sc.calculateSets();
 		
 		
-		var weightHeading = self.multiWeightMode()
-						  ? (sets.length > 0 ? sets[sets.length - 1].displayWeight : self.barbellWeight())
-						  : self.weightToCalculate()
-		;
+		var weightHeading = self.multiWeightMode() ? (sets.length > 0 ? sets[sets.length - 1].displayWeight : self.barbellWeight()) : self.weightToCalculate();
 		
 		//keep all plate configs (up to max amount constant)
 		self.allSetEntries.unshift({
@@ -225,7 +223,7 @@ var BarbellView = function(storageEnvironment)
 			//e.className += ' slidedown';
 			$(e).hide().slideDown();
 		}
-	}
+	};
 	
 	self.settingsVisible = ko.observable(false);
 	self.settingsVisible.subscribe(function(newValue) {	
@@ -242,7 +240,7 @@ var BarbellView = function(storageEnvironment)
 		}));
 		
 		self.storageHandler.set('warmupScheme', self.warmupScheme(), true);
-	}
+	};
 	
 	self.toggleSettings = function(e) {
 		self.settingsVisible(!self.settingsVisible());
@@ -253,5 +251,5 @@ var BarbellView = function(storageEnvironment)
 		} 
 
 		ga('send', 'event', 'settings', 'toggled', openClose);
-	}
-}
+	};
+};

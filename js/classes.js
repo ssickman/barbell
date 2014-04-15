@@ -32,7 +32,7 @@ function SetScheme(data) {
 		this[requiredKeys[i]] = data[requiredKeys[i]];
 	}
 	
-	for (var i = 0; i < additionalKeys.length; i++) {
+	for (i = 0; i < additionalKeys.length; i++) {
 		if (typeof(data[additionalKeys[i]]) != 'undefined') {
 			this[additionalKeys[i]] = data[additionalKeys[i]];
 		} else {
@@ -48,12 +48,13 @@ function SetScheme(data) {
 	this.maxPlates = 0;
 	
 	this.calculateSets = function() {
+		var weightsToCalculate = [];
 		
 		if (this.multiWeightMode) {
 			var multiWeights = this.weightToCalculate.split(/[\s*,+#;]+/);
 			this.warmupScheme = [];
-			var weightsToCalculate = []
-			for (var i = 0, j = multiWeights.length; i < j; i++) {
+			
+			for (i = 0, j = multiWeights.length; i < j; i++) {
 				if (!isNaN(multiWeights[i]) && multiWeights[i] > 0) {
 					this.warmupScheme.push({ percent:100, reps: 0 });
 					weightsToCalculate.push(multiWeights[i]);
@@ -63,11 +64,8 @@ function SetScheme(data) {
 		
 		var sets = [];
 		var po = new PlateOptimizer();
-		for (var i = 0; i < this.warmupScheme.length; i++) { 
-			var weightToCalculate = this.multiWeightMode
-								  ? weightsToCalculate[i]
-								  : parseInt(this.weightToCalculate * this.warmupScheme[i].percent / 100)
-			;
+		for (i = 0; i < this.warmupScheme.length; i++) { 
+			var weightToCalculate = this.multiWeightMode ? weightsToCalculate[i] : parseInt(this.weightToCalculate * this.warmupScheme[i].percent / 100);
 
 			var set = new SetFactory(
 				weightToCalculate,
@@ -92,7 +90,7 @@ function SetScheme(data) {
 		}
 		
 		return sets;
-	}
+	};
 }
 
 function SetFactory(weightToCalculate, barbellWeight, platesToUsePassed, plateWeightQuantities, ignoreSmallPlates, setDisplayData) {
@@ -102,7 +100,7 @@ function SetFactory(weightToCalculate, barbellWeight, platesToUsePassed, plateWe
 	
 	//get rid of the 2 smallest plates during warmups
 	if (ignoreSmallPlates) {
-		platesToUse = this.removeSmallPlates(platesToUse.slice(0), setDisplayData['units']);
+		platesToUse = this.removeSmallPlates(platesToUse.slice(0), setDisplayData.units);
 	}
 	
 	//make a copy to store on the set
@@ -144,7 +142,7 @@ SetFactory.prototype.removeSmallPlates = function(platesToUse, units) {
 	}
 	
 	return platesToUse;
-}
+};
 
 SetFactory.prototype.calculateSet = function(weightToCalculate, barbellWeight, platesToUse, plateWeightQuantities) {
 	//console.log(weightToCalculate);
@@ -169,7 +167,7 @@ SetFactory.prototype.calculateSet = function(weightToCalculate, barbellWeight, p
 			platesToUse.pop();
 		}
 		
-		if (plateCount > 0 && (platesLeft == 0 || left - weightToSubtract < 0)) {
+		if (plateCount > 0 && (platesLeft === 0 || left - weightToSubtract < 0)) {
 			plateConfiguration.push(new PlateConfiguration(
 				plateSize,
 				plateCount		
@@ -220,7 +218,7 @@ function PlateOptimizer()
 			);
 			
 			
-			var minThreshold = .9;
+			var minThreshold = 0.9;
 			var maxThreshold = 1 + ((100 - set.percent) / 2.5 / 100);
 			
 			var maxConcreteShortage = set.units == 'LB' ? 15 : 8;
@@ -292,13 +290,13 @@ function PlateOptimizer()
 		}
 
 		return bestCandidateSet;
-	}
+	};
 }
 
 
 function StorageHandler(environment)
 {
-	if (typeof(environment) != 'string' || environment.length == 0) {
+	if (typeof(environment) != 'string' || environment.length === 0) {
 		throw new Error('Environment (production/testing) must be set');
 	}
 	
@@ -307,12 +305,12 @@ function StorageHandler(environment)
 	this.isSupported = function()
 	{
 		return typeof(Storage) !== 'undefined';
-	}
+	};
 	
 	this.getKey = function(key)
 	{
 		return this.environment + '-' + key;
-	}
+	};
 	
 	this.getWithDefault = function(key, defaultValue, isArray)
 	{
@@ -328,12 +326,12 @@ function StorageHandler(environment)
 		} else {
 			return defaultValue;
 		}
-	}
+	};
 	
 	this.storageKeyExists = function(key) 
 	{
 		return typeof(localStorage[this.getKey(key)]) !== 'undefined';
-	}
+	};
 	
 	this.set = function(key, value, isArray)
 	{
@@ -345,5 +343,5 @@ function StorageHandler(environment)
 		
 			localStorage[this.getKey(key)] = value;
 		}
-	}
+	};
 }

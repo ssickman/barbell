@@ -10,7 +10,7 @@ var plateWeights = {
 
 var plateWeightQuantities = {};
 
-for (unit in plateWeights) {
+for (var unit in plateWeights) {
 	plateWeightQuantities[unit] = [];
 	
 	for (var i = 0, length = plateWeights[unit].length; i < length; i++) {
