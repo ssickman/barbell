@@ -7,9 +7,8 @@ css/normalize.min.css
 css/main.css
 css/font.css
 
-js/vendor/modernizr-2.6.2-respond-1.1.0.min.js
-js/vendor/knockout-3.0.0.js
 //ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js
+//cdnjs.cloudflare.com/ajax/libs/knockout/3.1.0/knockout-min.js
 
 js/main.js
 js/classes.js

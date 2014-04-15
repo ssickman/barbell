@@ -21,10 +21,12 @@
 		<link href="css/font.css" rel="stylesheet" type="text/css">
         <link rel="stylesheet" href="css/normalize.min.css">
         <link rel="stylesheet" href="css/main.css">
+        
+        <!-- <link rel="stylesheet" href="css/all.min.css"> -->
 		
 		<link rel="shortcut icon" href="favicon.ico" />
 		
-        <script src="js/vendor/modernizr-2.6.2-respond-1.1.0.min.js"></script>
+        <!-- <script src="js/vendor/modernizr-2.6.2-respond-1.1.0.min.js"></script> -->
     </head>
     <body>
         <!--[if lt IE 7]>
@@ -89,7 +91,7 @@
 	
 					</div>
 					
-					<div class="plate-quantity-wrap config-wrap" >
+					<div class="plate-quantity-wrap config-wrap" style="display:none;" >
 						<ul data-bind="foreach: plateWeightQuantities">
 							<li><span data-bind="text: size"></span> - <input data-bind="value: total"></li>
 						</ul>
@@ -191,11 +193,12 @@
             </footer>
         </div>
 
-        <script src="js/vendor/knockout-3.0.0.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/knockout/3.1.0/knockout-min.js"></script>
         <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
         <script src="js/classes.js"></script>
         <script src="js/static-data.js"></script>
         <script src="js/main.js"></script>
+        <!-- <script src="js/barbell.min.js"></script> -->
 
         <script>
 			bv = new BarbellView();
