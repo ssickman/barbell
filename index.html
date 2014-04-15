@@ -17,12 +17,36 @@
         <title>Barbell Configurator</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width">
+		<script src="//cdnjs.cloudflare.com/ajax/libs/yepnope/1.5.4/yepnope.min.js"></script>
+		<script type="text/javascript">
+			var docready=[],$=function(o){function r(fn){docready.push(fn);}if(typeof o === 'function') r(o);return{ready: r}};
+			yepnope([
+				{
+					load: '//ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js',
+					complete: function() {
+				        $ = jQuery;
+				        jQuery(document).ready(function() {
+				            for(n in docready) docready[n]();
+				        });
+				    }
+
+				},		
+				{
+					test: window.location.hostname == 'loc2al.barbell',
+					load: '//cdnjs.cloudflare.com/ajax/libs/knockout/3.1.0/knockout-min.js',
+					yep: ['js/classes.js','js/static-data.js','js/main.js'],
+					nope: ['js/barbell.min.js'],
+					complete: function() {
+						bv = new BarbellView();
+						ko.applyBindings(bv);			
+					}
+				}
+			]);
+		</script>
 		
 		<link href="css/font.css" rel="stylesheet" type="text/css">
         <link rel="stylesheet" href="css/normalize.min.css">
         <link rel="stylesheet" href="css/main.css">
-        
-        <!-- <link rel="stylesheet" href="css/all.min.css"> -->
 		
 		<link rel="shortcut icon" href="favicon.ico" />
 		
@@ -193,17 +217,9 @@
             </footer>
         </div>
 
-        <script src="//cdnjs.cloudflare.com/ajax/libs/knockout/3.1.0/knockout-min.js"></script>
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
-        <script src="js/classes.js"></script>
-        <script src="js/static-data.js"></script>
-        <script src="js/main.js"></script>
-        <!-- <script src="js/barbell.min.js"></script> -->
 
         <script>
-			bv = new BarbellView();
-			ko.applyBindings(bv);
-
+			
 			(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
 			(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
 			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)

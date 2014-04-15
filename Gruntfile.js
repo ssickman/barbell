@@ -11,12 +11,12 @@ module.exports = function(grunt) {
         files: {
         	'js/<%= pkg.name %>.min.js': ['js/static-data.js', 'js/classes.js', 'js/main.js']
 		} 
-      }
+      },
     },
     cssmin: {
     	combine: {
     		files: {
-	        	'css/all.min.css': ['css/normalize.min.css', 'css/font.css', 'css/main.css']
+	        	'css/<%= pkg.name %>.min.css': ['css/normalize.min.css', 'css/font.css', 'css/main.css']
 			} 
     	}
     }
@@ -28,5 +28,6 @@ module.exports = function(grunt) {
 
   // Default task(s).
   grunt.registerTask('default', ['uglify', 'cssmin']);
+  grunt.registerTask('build', ['uglify', 'cssmin']);
 
 };
