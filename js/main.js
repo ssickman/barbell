@@ -2,6 +2,31 @@
 
 var $ = jQuery.noConflict();
 
+
+var plateMapping = {
+	create: function(options) {
+		return new Plate(options.data.size, options.data.total, options.data.available);
+	}
+};
+var Plate = function(size, total, available) {
+	var self = this;
+	
+	self.size = ko.observable(size);
+	self.total = ko.observable(total);
+	self.available = ko.observable(available);
+	
+	self.available.subscribe(function(newValue) {
+		m.notifySubscribers(null, 'plates-available');
+	});
+	
+	self.total.subscribe(function(newValue) {
+		m.notifySubscribers(null, 'plate-totals');
+	});
+	
+};
+
+
+
 var BarbellView = function(storageEnvironment)
 {
 	var self = this;
@@ -18,17 +43,13 @@ var BarbellView = function(storageEnvironment)
 	
 	self.weightUnit = ko.observable(self.storageHandler.getWithDefault('weightUnit', 'LB'));
 	
-	self.weightUnit.subscribe(function(newValue) {	
+	self.weightUnit.subscribe(function(newValue) {
 		//change barbell and plates to appropriate units
 		self.barbellWeights(barbellWeights[newValue]);
 		self.barbellWeight(barbellWeights[newValue][0]);
-		self.plateWeights(plateWeights[newValue]);
-		
-		//restore available plates
 
-		self.plateWeightsAvailable(self.storageHandler.getWithDefault('plateWeightsAvailable' + self.weightUnit(), plateWeights[self.weightUnit()], true));
-		self.plateWeightQuantities(self.storageHandler.getWithDefault('plateWeightQuantities' + self.weightUnit(), plateWeightQuantities[self.weightUnit()], true));
-		
+		self.loadPlates();
+				
 		self.storageHandler.set('weightUnit', newValue);
 	});
 	
@@ -39,39 +60,16 @@ var BarbellView = function(storageEnvironment)
 		return weight + ' ' + self.weightUnit();
 	};
 
-	//set plate choices and check all initially
-	self.plateWeights = ko.observableArray(plateWeights[self.weightUnit()]);
-	self.plateWeightsAvailable = ko.observableArray(self.storageHandler.getWithDefault('plateWeightsAvailable' + self.weightUnit(), plateWeights[self.weightUnit()], true));
-	self.plateWeightsAvailable.subscribe(function(newValue) {	
-		
-		currentPlatesAvailable = self.storageHandler.getWithDefault('plateWeightsAvailable' + self.weightUnit(), plateWeights[self.weightUnit()], true);
-		
-		//prevent not having any plates
-		if (newValue.length === 0 && currentPlatesAvailable.length === 1) {
-			self.plateWeightsAvailable(currentPlatesAvailable);
-		
-			//alert('Whatcha gonna lift, bro?'); //comment out for now, use non alert later
-		} else {
-			self.storageHandler.set('plateWeightsAvailable' + self.weightUnit(), newValue, true);
-		}
-	});
-	
-	//keep track of the quantities of ecah plate available (ex: home gym 225 = 45 + 35 + 10)
-	self.plateWeightQuantities =  ko.observableArray(self.storageHandler.getWithDefault('plateWeightQuantities' + self.weightUnit(), plateWeightQuantities[self.weightUnit()], true));
-	self.savePlateWeightQuantities = function() {
-		self.storageHandler.set('plateWeightQuantities' + self.weightUnit(), self.plateWeightQuantities(), true);
-		self.indexPlateWeightQuantities();
+	self.plates = ko.mapping.fromJS(self.storageHandler.getWithDefault('plates' + self.weightUnit(), defaultPlates[self.weightUnit()], true), plateMapping);
+	self.loadPlates = function(){
+		ko.mapping.fromJS(self.storageHandler.getWithDefault('plates' + self.weightUnit(), defaultPlates[self.weightUnit()], true), self.plates);
 	};
 	
-	self.plateWeightQuantitiesIndex = {};
-	self.indexPlateWeightQuantities = function() {
-		self.plateWeightQuantitiesIndex = {};
-		for (var i = 0, length = self.plateWeightQuantities().length; i < length; i++) {
-			var weight = self.plateWeightQuantities()[i];
-			self.plateWeightQuantitiesIndex[weight.size] = weight.total;
-		}
-	}; self.indexPlateWeightQuantities();
-	
+	var savePlates = function(){
+		self.storageHandler.set('plates' + self.weightUnit(), ko.toJSON(self.plates));
+	};
+	m.subscribe(savePlates, self, 'plates-available');
+	m.subscribe(savePlates, self, 'plates-totals');
 	
 	
 	self.showGhostLabel = ko.observable(true);
@@ -182,15 +180,14 @@ var BarbellView = function(storageEnvironment)
 		}
 
 		var sc = new SetScheme({
-			units:                 self.weightUnit(),
-			barbellWeight:         self.barbellWeight(),
-			weightToCalculate:     self.weightToCalculate(),
-			plateWeightsAvailable: self.plateWeightsAvailable().slice(0),
-			plateWeightQuantities: self.plateWeightQuantitiesIndex,
-			ignoreSmallPlates:     self.ignoreSmallPlates(),
-			warmupScheme:          self.warmupScheme().slice(0),
-			optimize:              self.preferFewerPlates(),
-			multiWeightMode:       self.multiWeightMode()
+			units:             self.weightUnit(),
+			barbellWeight:     self.barbellWeight(),
+			weightToCalculate: self.weightToCalculate(),
+			plates:			   JSON.parse(ko.toJSON(self.plates())),
+			ignoreSmallPlates: self.ignoreSmallPlates(),
+			warmupScheme:      self.warmupScheme().slice(0),
+			optimize:          self.preferFewerPlates(),
+			multiWeightMode:   self.multiWeightMode()
 		});
 		var sets = sc.calculateSets();
 		
@@ -216,8 +213,6 @@ var BarbellView = function(storageEnvironment)
 		
 	};
 	
-	
-	
 	self.slideDownConfig = function(e) {
 		if (e.nodeType === 1) {
 			//e.className += ' slidedown';
@@ -225,11 +220,26 @@ var BarbellView = function(storageEnvironment)
 		}
 	};
 	
+	var maxPlatesText = ['set max plates', 'save max plates'];
+	self.maxPlatesText = ko.observable(maxPlatesText[false | 0]);
+	
+	
+	self.maxPlatesVisible = ko.observable();
+	self.toggleMaxPlates = function() {
+		self.maxPlatesVisible(!self.maxPlatesVisible());
+		
+		self.maxPlatesText(maxPlatesText[self.maxPlatesVisible() | 0]);
+		
+		savePlates();
+	};
+	
 	self.settingsVisible = ko.observable(false);
 	self.settingsVisible.subscribe(function(newValue) {	
 		if (!newValue) {
 			self.filterAndSaveWarmupScheme();
-			self.savePlateWeightQuantities();
+			self.maxPlatesVisible(!self.maxPlatesVisible());
+			self.maxPlatesText(maxPlatesText[self.maxPlatesVisible() | 0]);
+			savePlates();
 		}
 		
 	});
@@ -252,4 +262,6 @@ var BarbellView = function(storageEnvironment)
 
 		ga('send', 'event', 'settings', 'toggled', openClose);
 	};
+	
+	
 };

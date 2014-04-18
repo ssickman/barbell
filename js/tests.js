@@ -3,11 +3,7 @@ QUnit.done(function() {
 });
 
 var ga = function(){};
-var testplateWeightQuantities = {
-	"LB": {'2.5': 10, '5': 10, '10': 10, '25': 10, '35': 10, '45': 10},
-	"KG": {'1': 10, '2.5': 10, '5': 10, '10': 10, '15': 10, '20': 10}
-};
-
+var m = new ko.subscribable();
 module('Class Construction');
 	var pcSize  = 1;
 	var pcCount = 1;
@@ -36,12 +32,12 @@ module('Class Construction');
 	
 	test('Set Factory Basics', function(){	
 		
-		var pWeights = plateWeights.LB.slice(0);
+		var pWeights = defaultPlates.LB.slice(0);
 		var set = new SetFactory(
 			135,
 			barbellWeight,
 			pWeights,
-			testplateWeightQuantities.LB,
+			
 			false,
 			{
 				percent: 100,
@@ -58,12 +54,13 @@ module('Class Construction');
 module('Class Functionality');
 	test('Set Factory Calculation Basics', function(){	
 		var simpleSetFactory = function(weightToCalculate, percentToCalculate) {
-			var pWeights = plateWeights.LB.slice(0);
+			var pWeights = defaultPlates.LB.slice(0);
+
 			return  new SetFactory(
 				weightToCalculate,
 				barbellWeight,
 				pWeights,
-				testplateWeightQuantities.LB,
+				
 				false,
 				{
 					percent: percentToCalculate,
@@ -92,12 +89,11 @@ module('Class Functionality');
 	
 	test('Set Factory Calculation Limited Plate Quantities', function(){	
 		var simpleSetFactory = function(weightToCalculate, percentToCalculate) {
-			var pWeights = plateWeights.LB.slice(0);
+			var pWeights = defaultPlates.LB.slice(0);
 			return  new SetFactory(
 				weightToCalculate,
 				barbellWeight,
-				pWeights,
-				{'2.5': 10, '5': 10, '10': 10, '25': 10, '35': 10, '45': 1},
+				[{ size: 45, total: 1, available: true }, { size: 35, total: 2, available: true }, { size: 10, total: 2, available: true }, { size: 100, total: 2, available: false }],
 				false,
 				{
 					percent: percentToCalculate,
@@ -121,12 +117,12 @@ module('Class Functionality');
 	
 	test('Set Factory Calculation Ignore Small Plates', function(){	
 		var simpleSetFactory = function(weightToCalculate, percentToCalculate) {
-			var pWeights = plateWeights.LB.slice(0);
+			var pWeights = defaultPlates.LB.slice(0);
 			return  new SetFactory(
 				weightToCalculate,
 				barbellWeight,
 				pWeights,
-				testplateWeightQuantities.LB,
+				
 				true,
 				{
 					percent: percentToCalculate,
@@ -154,12 +150,12 @@ module('Class Functionality');
 	
 	test('Set Factory Calculation Include Small Plates', function(){	
 		var simpleSetFactory = function(weightToCalculate, percentToCalculate) {
-			var pWeights = plateWeights.LB.slice(0);
+			var pWeights = defaultPlates.LB.slice(0);
 			return  new SetFactory(
 				weightToCalculate,
 				barbellWeight,
 				pWeights,
-				testplateWeightQuantities.LB,
+				
 				false,
 				{
 					percent: percentToCalculate,
@@ -198,12 +194,12 @@ module('Class Functionality');
 	
 	test('Set Factory Calculation Unavailable Plates', function(){	
 		var simpleSetFactory = function(weightToCalculate, percentToCalculate) {
-			var pWeights = [5,10,25,35,45];
+			var pWeights = defaultPlates.LB.slice(1);
+			console.log(pWeights);
 			return  new SetFactory(
 				weightToCalculate,
 				barbellWeight,
 				pWeights,
-				testplateWeightQuantities.LB,
 				true,
 				{
 					percent: percentToCalculate,
@@ -223,14 +219,13 @@ module('Class Functionality');
 	});
 	
 	test('Set Factory Calculation Basics KG', function(){	
-		var pWeights2 = plateWeights.KG.slice(0);
+		var pWeights2 = defaultPlates.KG.slice(0);
 		var simpleSetFactory = function(weightToCalculate, percentToCalculate) {
-			var pWeights = plateWeights.LB.slice(0);
+			var pWeights = defaultPlates.LB.slice(0);
 			return  new SetFactory(
 				weightToCalculate,
 				20,
 				pWeights2,
-				testplateWeightQuantities.KG,
 				false,
 				{
 					percent: percentToCalculate,
@@ -259,14 +254,13 @@ module('Class Functionality');
 	
 	
 	test('Set Factory Calculation Basics KG', function(){	
-		var pWeights2 = plateWeights.KG.slice(0);
+		var pWeights2 = defaultPlates.KG.slice(0);
 		var simpleSetFactory = function(weightToCalculate, percentToCalculate) {
-			var pWeights = plateWeights.LB.slice(0);
+			var pWeights = defaultPlates.LB.slice(0);
 			return  new SetFactory(
 				weightToCalculate,
 				20,
 				pWeights2,
-				testplateWeightQuantities.KG,
 				true,
 				{
 					percent: percentToCalculate,
@@ -298,8 +292,7 @@ module('Set Scheme');
 			units:                 'LB',
 			barbellWeight:         45,
 			weightToCalculate:     315,
-			plateWeightsAvailable: plateWeights.LB,
-			plateWeightQuantities: testplateWeightQuantities.LB,
+			plates: defaultPlates.LB,
 			ignoreSmallPlates:     true,
 			warmupScheme:          warmupScheme.slice(0)
 		});
@@ -327,8 +320,8 @@ module('Set Scheme');
 			units:                 'LB',
 			barbellWeight:         45,
 			weightToCalculate:     315,
-			plateWeightsAvailable: plateWeights.LB,
-			plateWeightQuantities: testplateWeightQuantities.LB,
+			plates: defaultPlates.LB,
+			 
 			ignoreSmallPlates:     false,
 			warmupScheme:          warmupScheme.slice(0)
 		});
@@ -356,8 +349,8 @@ module('Set Scheme');
 			units:                 'LB',
 			barbellWeight:         45,
 			weightToCalculate:     315,
-			plateWeightsAvailable: plateWeights.LB,
-			plateWeightQuantities: testplateWeightQuantities.LB,
+			plates: defaultPlates.LB,
+			 
 			ignoreSmallPlates:     false,
 			warmupScheme:          warmupScheme.slice(0),
 			optimize:              true
@@ -386,8 +379,8 @@ module('Set Scheme');
 					units:                 'LB',
 					barbellWeight:         45,
 					weightToCalculate:     315,
-					plateWeightsAvailable: plateWeights.LB,
-					plateWeightQuantities: testplateWeightQuantities.LB,
+					plates: defaultPlates.LB,
+					 
 					ignoreSmallPlates:     true,
 				});
 			},
@@ -402,8 +395,8 @@ module('Multiweight Mode');
 			barbellWeight:         45,
 			weightToCalculate:     '100*200,300+400#500;600',
 			multiWeightMode:       true,
-			plateWeightsAvailable: plateWeights.LB,
-			plateWeightQuantities: testplateWeightQuantities.LB,
+			plates: defaultPlates.LB,
+			 
 			ignoreSmallPlates:     true,
 			warmupScheme:          warmupScheme.slice(0)
 		});
@@ -440,8 +433,8 @@ module('Plate Optimizer');
 			units:                 'LB',
 			barbellWeight:         45,
 			weightToCalculate:     260,
-			plateWeightsAvailable: plateWeights.LB,
-			plateWeightQuantities: testplateWeightQuantities.LB,
+			plates: defaultPlates.LB,
+			 
 			ignoreSmallPlates:     false,
 			warmupScheme:          [{reps: 1, percent: 50}]
 		});
@@ -461,8 +454,8 @@ module('Plate Optimizer');
 			units:                 'LB',
 			barbellWeight:         45,
 			weightToCalculate:     810,
-			plateWeightsAvailable: plateWeights.LB,
-			plateWeightQuantities: testplateWeightQuantities.LB,
+			plates: defaultPlates.LB,
+			 
 			ignoreSmallPlates:     false,
 			warmupScheme:          [{reps: 1, percent: 50}]
 		});
@@ -537,9 +530,9 @@ module('BarbellView');
 		
 		deepEqual(bv.barbellWeights(), barbellWeights[defaultUnit], 'barbell weights loaded');
 	
-		deepEqual(bv.plateWeights(), plateWeights[defaultUnit], 'plate weights loaded');
-		deepEqual(bv.plateWeightsAvailable(), plateWeights[defaultUnit], 'weights available equals all weights for given units');
-		deepEqual(bv.plateWeights(), bv.plateWeightsAvailable() , 'weights available equals BarbellView copy of default');
+		var bvPlates = JSON.parse(ko.toJSON(bv.plates()));
+		bvPlates.sort(function(a, b) { return a.size - b.size; });
+		deepEqual(bvPlates, defaultPlates[defaultUnit], 'weights available equals all weights for given units');
 
 		ok(bv.showGhostLabel(), 'weight label on by default');
 		
@@ -551,10 +544,10 @@ module('BarbellView');
 		deepEqual(bv.barbellWeights(), barbellWeights[defaultUnit], 'barbell weights loaded');
 	
 		equal(bv.barbellWeightDisplay(100), '100 KG');
-		
-		deepEqual(bv.plateWeights(), plateWeights[defaultUnit], 'plate weights loaded');
-		deepEqual(bv.plateWeightsAvailable(), plateWeights[defaultUnit], 'weights available equals all weights for given units');
-		deepEqual(bv.plateWeights(), bv.plateWeightsAvailable() , 'weights available equals BarbellView copy of default');
+
+		bvPlates = JSON.parse(ko.toJSON(bv.plates()));
+		bvPlates.sort(function(a, b) { return a.size - b.size; });
+		deepEqual(bvPlates, defaultPlates[defaultUnit], 'weights available equals all weights for given units');
 		
 		
 	});	
@@ -566,17 +559,13 @@ module('BarbellView');
 		ko.applyBindings(bv);
 		bv.weightUnit('LB');
 		
-		var plateWeightsTest = plateWeights.LB.slice(0);
-		bv.plateWeightsAvailable(plateWeightsTest.slice(2));
+		var defaultPlatesTest = defaultPlates.LB.slice(0);
+		bv.plates(defaultPlatesTest.slice(2));
 		
-		notDeepEqual(plateWeightsTest, bv.plateWeightsAvailable(), 'bv copy no longer equal to default available plates');
+		notDeepEqual(defaultPlatesTest, bv.plates(), 'bv copy no longer equal to default available plates');
 		
-		bv.plateWeightsAvailable(plateWeights.LB.slice(0, 1));
-		equal(bv.plateWeightsAvailable().length, 1, 'number of plates set correctly');
-		
-		bv.plateWeightsAvailable([]);
-		
-		notEqual(bv.plateWeightsAvailable().length, 0, 'prevent no plates available');
+		bv.plates(defaultPlates.LB.slice(0, 1));
+		equal(bv.plates().length, 1, 'number of plates set correctly');
 		
 		unbindKo();
 	});
@@ -699,30 +688,7 @@ module('BarbellView');
 		
 		unbindKo();
 	});
-	
-	test('index plate quantities', function(){
-		unbindKo();
 		
-		var bv = new BarbellView('test');
-		ko.applyBindings(bv);
-		bv.weightUnit('LB');
-		
-		bv.plateWeightQuantities([
-			{size: 1, total: 1},
-			{size: 2, total: 2},
-			{size: 3, total: 3},
-			{size: 4, total: 4},
-		]);
-
-		bv.indexPlateWeightQuantities();
-		console.log(bv.plateWeightQuantitiesIndex);
-		for (var i = 1; i <= 4; i++) {
-			equal(bv.plateWeightQuantitiesIndex[i], i);
-		}
-		
-		unbindKo();
-	});
-	
 	test('slide down config', function(){
 		unbindKo();
 		expect(0);
@@ -916,6 +882,21 @@ module('BarbellView');
 		
 		
 		
+	});
+	
+	test('plate subscribe', function(){
+		unbindKo();
+		var p = new Plate(10, 10, true);
+		ko.applyBindings(p);
+		p.available(false);
+		p.total(11);
+		
+		unbindKo();
+		var bv = new BarbellView('test');
+		ko.applyBindings(bv);
+		bv.toggleMaxPlates();
+		
+		expect(0);
 	});
 
 

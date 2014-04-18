@@ -13,8 +13,7 @@ function SetScheme(data) {
 		'units',
 		'barbellWeight',
 		'weightToCalculate',
-		'plateWeightsAvailable',
-		'plateWeightQuantities',
+		'plates',
 		'ignoreSmallPlates',
 		'warmupScheme'
 	];
@@ -40,10 +39,8 @@ function SetScheme(data) {
 		}
 	}
 	
-	
 	this.warmupScheme.push({ percent:100, reps: 0 });
-	
-	
+		
 	//determine how much padding we need to position sets at bottom of div
 	this.maxPlates = 0;
 	
@@ -70,8 +67,7 @@ function SetScheme(data) {
 			var set = new SetFactory(
 				weightToCalculate,
 				this.barbellWeight,
-				this.plateWeightsAvailable.slice(0),
-				this.plateWeightQuantities,
+				this.plates.slice(0),
 				this.ignoreSmallPlates && this.warmupScheme[i].percent != 100,
 				{
 					percent: this.warmupScheme[i].percent,
@@ -93,10 +89,10 @@ function SetScheme(data) {
 	};
 }
 
-function SetFactory(weightToCalculate, barbellWeight, platesToUsePassed, plateWeightQuantities, ignoreSmallPlates, setDisplayData) {
+function SetFactory(weightToCalculate, barbellWeight, platesToUsePassed, ignoreSmallPlates, setDisplayData) {
 	
 	var platesToUse = platesToUsePassed.slice();
-	platesToUse.sort(function(a, b) { return a - b; });
+	platesToUse.sort(function(a, b) { return a.size - b.size; });
 	
 	//get rid of the 2 smallest plates during warmups
 	if (ignoreSmallPlates) {
@@ -106,13 +102,11 @@ function SetFactory(weightToCalculate, barbellWeight, platesToUsePassed, plateWe
 	//make a copy to store on the set
 	var setPlatesToUse = platesToUse.slice(0);
 	
-	var set = this.calculateSet(weightToCalculate, barbellWeight, platesToUse, plateWeightQuantities);
+	var set = this.calculateSet(weightToCalculate, barbellWeight, platesToUse);
 
 	set.barbellWeight     = barbellWeight;
 	set.platesToUse       = setPlatesToUse; 
 	set.ignoreSmallPlates = ignoreSmallPlates;
-	
-	set.plateWeightQuantities = plateWeightQuantities;
 	
 	if (typeof(setDisplayData) == 'object') {
 		for (var key in setDisplayData) {
@@ -136,7 +130,7 @@ SetFactory.prototype.removeSmallPlates = function(platesToUse, units) {
 	}
 	
 	for (var i = 0; i < smallPlates.length; i++) {
-		if (smallPlates[i] > plateThreshold) {
+		if (smallPlates[i].size > plateThreshold) {
 			platesToUse.unshift(smallPlates[i]);
 		}
 	}
@@ -144,20 +138,25 @@ SetFactory.prototype.removeSmallPlates = function(platesToUse, units) {
 	return platesToUse;
 };
 
-SetFactory.prototype.calculateSet = function(weightToCalculate, barbellWeight, platesToUse, plateWeightQuantities) {
-	//console.log(weightToCalculate);
+SetFactory.prototype.calculateSet = function(weightToCalculate, barbellWeight, platesToUse) {
+	
 	var left = weightToCalculate - barbellWeight;
-			
+		
 	var plateConfiguration = [];
 	var plateCount = 0;
 	
 	while (left > 0 && platesToUse.length > 0) {
 		//go from heaviest to lightest
-		var plateSize = platesToUse[platesToUse.length - 1];
-		var platesLeft = parseInt(plateWeightQuantities[plateSize]) - plateCount;
+		var plate = platesToUse[platesToUse.length - 1];
+		
+		if (!plate.available) {
+			plate.total = 0;
+		}
+		
+		var platesLeft = parseInt(plate.total) - plateCount;
 		
 		//need a balanced bar
-		var weightToSubtract =  plateSize * 2;
+		var weightToSubtract =  plate.size * 2;
 		
 		//we can still use this plate
 		if (left - weightToSubtract >= 0 && platesLeft > 0) {
@@ -169,7 +168,7 @@ SetFactory.prototype.calculateSet = function(weightToCalculate, barbellWeight, p
 		
 		if (plateCount > 0 && (platesLeft === 0 || left - weightToSubtract < 0)) {
 			plateConfiguration.push(new PlateConfiguration(
-				plateSize,
+				plate.size,
 				plateCount		
 			));
 
@@ -202,13 +201,11 @@ function PlateOptimizer()
 		var platesToUse = set.platesToUse.slice();
 		
 		if (1==1) {
-			//console.log(set.plateWeightQuantities);
 			//what is the ideal weight we should calculate, using all plates available
 			var targetSet = new SetFactory(
 				set.displayWeight,
 				set.barbellWeight,
 				set.platesToUse,
-				set.plateWeightQuantities,
 				false,
 				{
 					percent: set.percent,
@@ -257,7 +254,6 @@ function PlateOptimizer()
 					candidateWeight,
 					set.barbellWeight,
 					set.platesToUse,
-					set.plateWeightQuantities,
 					false,
 					{
 						percent: set.percent,

@@ -8,15 +8,25 @@ var plateWeights = {
 	"KG": [  1, 2.5,  5, 10, 15, 20]
 };
 
-var plateWeightQuantities = {};
 
-for (var unit in plateWeights) {
-	plateWeightQuantities[unit] = [];
-	
-	for (var i = 0, length = plateWeights[unit].length; i < length; i++) {
-		plateWeightQuantities[unit].push({size: plateWeights[unit][i], total: 10});
-	}
-}
+var defaultPlates = {
+	LB: [
+		{ size: 2.5, total: 10, available: true },
+		{ size: 5,   total: 10, available: true },
+		{ size: 10,  total: 10, available: true },
+		{ size: 25,  total: 10, available: true },
+		{ size: 35,  total: 10, available: true },
+		{ size: 45,  total: 10, available: true },
+	],
+	KG: [
+		{ size: 1,   total: 10, available: true },
+		{ size: 2.5, total: 10, available: true },
+		{ size: 5,   total: 10, available: true },
+		{ size: 10,  total: 10, available: true },
+		{ size: 15,  total: 10, available: true },
+		{ size: 20,  total: 10, available: true },
+	]
+};
 
 var warmupScheme = [
 	{ reps: 5, percent: 40},

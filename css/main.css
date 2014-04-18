@@ -380,16 +380,16 @@ ul.sets{
 	width: 80%;
 }
 
-.max-plate-quantity{
-	background: none repeat scroll 0 0 #F0F0F0;
+.max-plate-quantity {
+    background: none repeat scroll 0 0 #F0F0F0;
+    clear: both;
+    display: block;
     font-size: 14px;
-    margin: 0;
+    margin: 5px auto;
     padding: 0;
     text-align: center;
-    width: 100%;
-    display: none;
+    width: 38px;
 }
-
 .settings-box{
 	background: #f9f9f9;
 	border: 1px solid #ddd;
@@ -448,6 +448,7 @@ ul.sets{
 	text-decoration:none;
 	text-align:center;
 	text-shadow:1px 1px 0px #ffffff;
+	cursor: pointer;
 }
 .button1:hover {
 	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #dfdfdf), color-stop(1, #ededed) );
@@ -459,16 +460,15 @@ ul.sets{
 	top:1px;
 }
 
-.button1.small-button{
-	/*
-height: 30px;
-	line-height: 22px;
+.button1.small-button {
+    font-size: 11px;
+    font-weight: lighter;
+    height: 20px;
+    line-height: 20px;
     margin-bottom: 5px;
+    padding: 2px 0;
     position: relative;
-    top: -1px;
-    width: 100%;
-*/
-    transition: all .2s ease-out;
+    transition: all 0.2s ease-out 0s;
 }
 
 .hideSmallButton{
@@ -513,7 +513,7 @@ h3.weight, ul.sets, .plate, .wrapper, .weight-reps, .title, footer.wrapper h3,
 	transition: all .1s ease-out;
 }
 
-.plate-weights-wrap label, .single-checkbox label{
+div.available-plates > div, .plate-weights-wrap labe1l, .single-checkbox label{
 	float: left;
 }
 
@@ -521,7 +521,7 @@ h3.weight, ul.sets, .plate, .wrapper, .weight-reps, .title, footer.wrapper h3,
 	cursor: pointer;
 }
 
-.label > .tooltip {
+.label > .tooltip, div.tooltip {
 	display: block;
     font-size: 12px;
     font-style: italic;
@@ -819,7 +819,7 @@ label.single-checkbox-label {
 		font-size: 13px;
 	}
 	
-	.plate-weights-wrap label:nth-child(4) {
+	.available-plates > div:nth-child(4) {
 		clear: both;
 		
 	}
