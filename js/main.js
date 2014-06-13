@@ -25,10 +25,31 @@ var Plate = function(size, total, available) {
 	
 };
 
+var SettingsToggle = function() {
+	var self = this;
+	
+	self.settingsVisible = ko.observable(false);
+	self.toggleSettings = function(e) {
+		self.settingsVisible(!self.settingsVisible());
+		
+		var openClose = 'opened';
+		if (!self.settingsVisible()) {
+			openClose = 'closed';			
+		} 
 
+		m.notifySubscribers(self.settingsVisible(), 'settings-visible');
+		
+		ga('send', 'event', 'settings', 'toggled', openClose);
+	}
+	
+	m.subscribe(function(newValue) {	
+		self.settingsVisible(false);
 
-var BarbellView = function(storageEnvironment)
-{
+		m.notifySubscribers(self.settingsVisible(), 'settings-visible');
+	}, self, 'close-settings');
+};
+
+var BarbellView = function(storageEnvironment) {
 	var self = this;
 
 	if (typeof(storageEnvironment) == 'undefined') {
@@ -170,14 +191,17 @@ var BarbellView = function(storageEnvironment)
 	
 	self.calculateSets = function() {
 		
-		
-		if (self.weightToCalculate() === null || self.weightToCalculate() < self.barbellWeight() || (isNaN(self.weightToCalculate()) && !self.multiWeightMode())) {
+
+		if (
+			typeof(self.weightToCalculate()) === 'undefined' || 
+			self.weightToCalculate() === null || 
+			self.weightToCalculate() < self.barbellWeight() || 
+			(isNaN(self.weightToCalculate()) && !self.multiWeightMode())
+		) {
 			return false;
 		}
 		
-		if (self.settingsVisible()) {
-			self.toggleSettings();
-		}
+		m.notifySubscribers(false, 'close-settings')
 
 		var sc = new SetScheme({
 			units:             self.weightUnit(),
@@ -234,7 +258,8 @@ var BarbellView = function(storageEnvironment)
 	};
 	
 	self.settingsVisible = ko.observable(false);
-	self.settingsVisible.subscribe(function(newValue) {	
+	m.subscribe(function(newValue) {	
+		self.settingsVisible(newValue);
 		if (!newValue) {
 			self.filterAndSaveWarmupScheme();
 			self.maxPlatesVisible(!self.maxPlatesVisible());
@@ -242,7 +267,9 @@ var BarbellView = function(storageEnvironment)
 			savePlates();
 		}
 		
-	});
+	}, self, 'settings-visible');
+
+	//self.settingsVisible.subscribe();
 	
 	self.filterAndSaveWarmupScheme = function(){
 		self.warmupScheme(ko.utils.arrayFilter(self.warmupScheme(), function(warmup) {
@@ -252,16 +279,8 @@ var BarbellView = function(storageEnvironment)
 		self.storageHandler.set('warmupScheme', self.warmupScheme(), true);
 	};
 	
-	self.toggleSettings = function(e) {
-		self.settingsVisible(!self.settingsVisible());
-		
-		var openClose = 'opened';
-		if (!self.settingsVisible()) {
-			openClose = 'closed';			
-		} 
-
-		ga('send', 'event', 'settings', 'toggled', openClose);
-	};
+	
 	
 	
 };
+

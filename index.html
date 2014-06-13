@@ -31,14 +31,18 @@
 				    }
 				},		
 				{
-					test: window.location.hostname == 'local.barbell',
+					test: window.location.hostname == 'local.barbell.im',
 					load: ['//cdnjs.cloudflare.com/ajax/libs/knockout/3.1.0/knockout-min.js', '//cdnjs.cloudflare.com/ajax/libs/knockout.mapping/2.4.1/knockout.mapping.js'],
 					yep: ['js/classes.js','js/static-data.js','js/main.js'],
 					nope: ['js/barbell.min.js'],
 					complete: function() {
 						m = new ko.subscribable();
+						
+						st = new SettingsToggle();
+						ko.applyBindings(st, document.getElementById('settings-toggle'));			
+						
 						bv = new BarbellView();
-						ko.applyBindings(bv);			
+						ko.applyBindings(bv, document.getElementById('main'));			
 						
 						
 					}
@@ -67,14 +71,14 @@
                 	<span class="title-short">Barbell</span>
                 </h1>
                 <nav>
-                    <ul>
+                    <ul id="settings-toggle">
                         <li><a href="#" class="settings" data-bind="click: toggleSettings, css: { toggled: settingsVisible }">settings</a></li>
                     </ul>
                 </nav>
             </header>
         </div>
 
-        <div class="main-container">
+        <div id="main" class="main-container">
             <div class="main wrapper clearfix">
 	
 				<div id="settings" class="config settings-box" data-bind="css: { toggled: settingsVisible }">

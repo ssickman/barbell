@@ -610,7 +610,7 @@ label.single-checkbox-label{
 	clear:none;
 	width: auto !important;;
 	position: relative;
-	top: 0px;
+	top: -2px;
 	margin-left: 15px;
 	margin-right: 0;
 	text-align: left;

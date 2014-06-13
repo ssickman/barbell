@@ -602,16 +602,20 @@ module('BarbellView');
 		unbindKo();
 		
 		var bv = new BarbellView('test');
-		ko.applyBindings(bv);
+		ko.applyBindings(bv, document.getElementById('main'));
 		bv.weightUnit('LB');
+		
+		var st = new SettingsToggle();
+		ko.applyBindings(st, document.getElementById('settings-toggle'));			
+						
 		
 		ok(!bv.settingsVisible());
 		
-		bv.toggleSettings();
+		st.toggleSettings();
 		
 		ok(bv.settingsVisible());
 		
-		bv.toggleSettings();
+		st.toggleSettings();
 		
 		ok(!bv.settingsVisible());
 
