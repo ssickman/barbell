@@ -1,5 +1,5 @@
 CACHE MANIFEST
-#rev12
+#rev13
 
 CACHE:
 
@@ -9,10 +9,13 @@ css/font.css
 
 //ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js
 //cdnjs.cloudflare.com/ajax/libs/knockout/3.1.0/knockout-min.js
+//cdnjs.cloudflare.com/ajax/libs/yepnope/1.5.4/yepnope.min.js
+//cdnjs.cloudflare.com/ajax/libs/knockout.mapping/2.4.1/knockout.mapping.js
 
 js/main.js
 js/classes.js
 js/static-data.js
+js/barbell.min.js
 
 img/gear-icon.png
 img/GitHub-Mark-Light-120px-plus.png
