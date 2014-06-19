@@ -262,7 +262,11 @@ var BarbellView = function(storageEnvironment) {
 		self.settingsVisible(newValue);
 		if (!newValue) {
 			self.filterAndSaveWarmupScheme();
-			self.maxPlatesVisible(!self.maxPlatesVisible());
+			
+			if (self.maxPlatesVisible()) {
+				self.maxPlatesVisible(!self.maxPlatesVisible());
+			}
+			
 			self.maxPlatesText(maxPlatesText[self.maxPlatesVisible() | 0]);
 			savePlates();
 		}
